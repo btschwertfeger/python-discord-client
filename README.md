@@ -3,7 +3,7 @@
 [![Generic badge](https://img.shields.io/badge/license-MIT-green.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/pythoon-3.7+-blue.svg)](https://shields.io/)
 
-# Featues
+# Features
 
 - Connect to your discord Account
 - Simple handling of authentication
