@@ -52,14 +52,11 @@ class ReconnectingWebsocket(object):
                                     self._sequence = evt_obj["s"]
                                     if evt_obj["op"] == 10:  
                                         self._heartbeat_interval = int(evt_obj["d"]["heartbeat_interval"]) / 1000
-
                             except ValueError:
                                 pass
                             else:
-                                # print(evt_obj)
                                 if self._coro:
                                     await self._coro(evt_obj)
-                                # await self._handle_event(evt_obj)
                     
                 except ws.ConnectionClosed:
                     keep_waiting = False

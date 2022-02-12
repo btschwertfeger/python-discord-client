@@ -1,19 +1,37 @@
-# Discord-Websocket-Client
+# Welcome to python-discord-client
 
-Simple Websocket Client for Discord
+[![Generic badge](https://img.shields.io/badge/license-MIT-green.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/pythoon-3.7+-blue.svg)](https://shields.io/)
 
-This project is still in progress.
+# Featues
 
-## Example Usage
+- Connect to your discord Account
+- Simple handling of authentication
+- Implement websockets (note only python3.7+)
+
+# Quick Start
+
+- Register at [Discord](https://discord.com/).
+- Login and copy your auth token.
+
+```bash
+pip install python-discord-client
+```
+
+## Rest Client
+
+- not implemented yet
+
+## Websockets
 
 ```python
 import asyncio
-from pydisco_client.ws_client import ReconnectingWebsocket
+from python_discord_client.ws_client import ReconnectingWebsocket
 
 token = "your-discord-token"
 async def main():
     async def handle_event(data: dict):
-        print(data)
+        #print(data)
         if not data or "op" not in data:
             return
 
@@ -60,3 +78,7 @@ if __name__ == "__main__":
 # Notes
 
 Discord Documentation: https://discord.com/developers/docs/topics/gateway
+
+# Todo
+
+- Rest Client
