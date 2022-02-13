@@ -4,6 +4,6 @@
 # 88 YY 88  dP    88     dP""""Yb  YboodP 88  Yb dP""""Yb  YboodP 888888
 
 
-VERSION = (0, 5, 0)
+VERSION = (0, 5, 1)
 
 __version__ = '.'.join(map(str, VERSION))

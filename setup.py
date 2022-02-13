@@ -16,7 +16,7 @@ URL = 'https://github.com/btschwertfeger/python-discord-client'
 EMAIL = 'development@b-schwertfeger.de'
 AUTHOR = 'Benjamin Thomas Schwertfeger'
 REQUIRES_PYTHON = '>=3.7.0'
-VERSION = '0.5.0'
+VERSION = '0.5.1'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
@@ -118,10 +118,9 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy'
+        #'Programming Language :: Python :: Implementation :: CPython',
+        #'Programming Language :: Python :: Implementation :: PyPy'
     ],
-    # $ setup.py publish support.
     cmdclass={
         'upload': UploadCommand,
     },

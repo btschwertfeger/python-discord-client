@@ -1,9 +1,15 @@
-import requests
+from python_discord_client.user.user import UserData
+from python_discord_client.channel.channel import ChannelData
+from python_discord_client.guild.guild import GuildData
 
-import exceptions
-class Client(object):
 
-    def __init__(self):
-        raise NotImplementedError
+class User(UserData):
+    pass
 
-    
+
+class Guild(GuildData):
+    pass
+
+
+class Channel(ChannelData):
+    pass

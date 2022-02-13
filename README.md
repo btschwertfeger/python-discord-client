@@ -1,7 +1,7 @@
 # Welcome to python-discord-client
 
 [![Generic badge](https://img.shields.io/badge/license-MIT-green.svg)](https://shields.io/)
-[![Generic badge](https://img.shields.io/badge/pythoon-3.7+-blue.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/python-3.7+-blue.svg)](https://shields.io/)
 
 # Features
 
@@ -15,7 +15,7 @@
 - Login and copy your auth token.
 
 ```bash
-pip install python-discord-client
+python3 -m pip install python-discord-client
 ```
 
 ## Rest Client
@@ -55,7 +55,7 @@ async def main():
         elif data["op"] == 9:  # Invalid Session
             print(f"This is OP 9 - {data}")
         elif data["op"] == 10:  # Hello
-            print("Hearbeat intervall received!")
+            print("Hearbeat interval received!")
         elif data["op"] == 11:  # Heartbeat ACK
             print("Heartbeat Received")
         else:
