@@ -6,10 +6,13 @@ class BaseRequestAPI(object):
     BASE_URL = 'https://discord.com/api/v9'
     TIMEOUT = 10
 
-    def __init__(self):
-        pass
+    def __init__(self, token: str, url: str=None):
+        self._token = token
+        if url != None:
+            self.BASE_URL = url
+        self._session = self._get_session()
 
-    def _request(self, method: str, params: dict={}, uri: str='', headers: dict={}) -> dict:
+    def _request(self, method: str, params={}, uri: str='', headers: dict={}) -> dict:
         uri_path = uri
         data_json = ''
         if method in ['GET', 'DELETE']:
@@ -21,10 +24,12 @@ class BaseRequestAPI(object):
                 uri += f'?{data_json}'
         else:
             if params:
-                # ...
                 data_json = params 
-       
-        payload = json.dumps(data_json)
+        try:
+            payload = json.dumps(data_json)
+        except:
+            payload = data_json
+
         url = f'{self.BASE_URL}{uri}'
         response = None
 
@@ -61,4 +66,4 @@ class BaseRequestAPI(object):
             else:
                 return data
         else:
-            raise Exception('{}-{}'.format(response_data.status_code, response_data.text))
+            raise Exception(f'{response_data.status_code}: {response_data.text}')

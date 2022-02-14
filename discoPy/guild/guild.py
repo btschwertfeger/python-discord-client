@@ -1,16 +1,13 @@
 from python_discord_client.base_request.base_request import BaseRequestAPI
 
+
 class GuildData(BaseRequestAPI):
+    '''Contains a collection of guild/server related methods.'''
+    
+    def __init__(self, token: str, url: str=None):
+        super().__init__(token, url)
 
-    def __init__(self, token: str):
-        self._token = token
-        self._session = self._get_session()
-
-    def send_message(self, channel_id, message: str) -> dict:
-        '''Sends a text message to a channel'''
-        payload = { 'content': message }
-        return self._request(method='POST', params=payload, uri=f'/channels/{channel_id}/messages')
-
+    # -----======= G E N E R A L =======-----
     def create_guild(self, 
         name: str, 
         region: str=None, 
@@ -25,9 +22,7 @@ class GuildData(BaseRequestAPI):
         system_channel_id: str=None, 
         system_channel_flags: int=None
     ) -> dict:
-        '''
-        https://discord.com/developers/docs/resources/guild#create-guild
-        '''
+        '''https://discord.com/developers/docs/resources/guild#create-guild'''
         payload = { 'name': name }
         if region:
             payload['region'] = region
@@ -55,12 +50,8 @@ class GuildData(BaseRequestAPI):
         return self._request('POST', params = payload, uri='/guilds')
 
     def get_guild(self, guild_id, with_counts: bool=False) -> dict:
-        '''
-        https://discord.com/developers/docs/resources/guild#get-guild
-        '''
-        params = {
-            'width_couunts': with_counts
-        }
+        '''https://discord.com/developers/docs/resources/guild#get-guild'''
+        params = { 'width_couunts': with_counts }
         return self._request('GET', params=params, uri=f'/guilds/{guild_id}')
 
     def get_guild_preview(self, guild_id) -> dict:
@@ -87,6 +78,7 @@ class GuildData(BaseRequestAPI):
         features: list=None,
         description: str=None,premium_progress_bar_enabled: bool=None
     ) -> dict:
+        '''https://discord.com/developers/docs/resources/guild#modify-guild'''
         payload = { 'name': name }
         if region != None:
             payload['region'] = region
@@ -146,6 +138,7 @@ class GuildData(BaseRequestAPI):
         parent_id,
         nsfw: bool
     ) -> dict:
+        '''https://discord.com/developers/docs/resources/guild#create-guild-channel'''
         payload = {
             'guild_id': guild_id,
             'name': name,
@@ -219,7 +212,6 @@ class GuildData(BaseRequestAPI):
 
     def add_guild_member_role(self, guild_id, user_id, role_id) -> dict:
         '''https://discord.com/developers/docs/resources/guild#add-guild-member-role'''
-
         return self._request(method='PUT', uri=f'/guilds/{guild_id}/members/{user_id}/roles/{role_id}')
 
     def remove_guild_member_role(self, guild_id, user_id, role_id) -> dict:
@@ -395,4 +387,235 @@ class GuildData(BaseRequestAPI):
             params['suppress'] = suppress
         return self._request(method='PATCH', params=params, uri=f'/guilds/{guild_id}/voice-states/{user_id}e')
 
-    
+    def get_guild_audit_log(self, guild_id, user_id, action_type:int, before=None, limit: int=50) -> dict:
+        '''https://discord.com/developers/docs/resources/audit-log#get-guild-audit-log'''
+        params = {}
+        if user_id != None:
+            params['user_id'] = user_id
+        if action_type != None:
+            params['action_type'] = action_type
+        if before != None:
+            params['before'] = before
+        if limit != None:
+            params['limit'] = limit
+        return self._request('GET', params=params, uri=f'/guilds/{guild_id}/audit-logs')
+
+    # -----======= S H E D U L E D - E V E N T S =======-----
+    def list_scheduled_events_for_guild(self, guild_id, with_user_count:bool=None) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-scheduled-event#list-scheduled-events-for-guild'''
+        params = {}
+        if with_user_count != None:
+            params['with_user_count'] = with_user_count
+        return self._request('GET', params=params, uri=f'/guilds/{guild_id}/scheduled-events')
+
+    def create_guild_scheduled_event(self, 
+        guild_id,
+        name: str,
+        entity_type,
+        privacy_level,
+        scheduled_start_time,
+        scheduled_end_time,
+        channel_id=None,
+        entity_metadata=None,
+        description: str=None,
+        image=None
+    ) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-scheduled-event#create-guild-scheduled-event'''
+        payload = {
+            'name': name,
+            'entity_type': entity_type,
+            'privacy_level': privacy_level,
+            'scheduled_start_time': scheduled_start_time,
+            'scheduled_end_time': scheduled_end_time
+        }
+        if channel_id != None:
+            payload['channel_id'] = channel_id
+        if entity_metadata != None:
+            payload['entity_metadata'] = entity_metadata
+        if description != None:
+            payload['description'] = description
+        if image != None:
+            payload['image'] = image
+        return self._request('POST', params=payload, uri=f'/guilds/{guild_id}/scheduled-events')
+
+    def get_guild_scheduled_event(self, guild_id, guild_scheduled_event_id, with_user_count: bool=None) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-scheduled-event#get-guild-scheduled-event'''
+        params = {}
+        if with_user_count != None:
+            params['with_user_count'] = with_user_count
+        return self._request('GET', params=params, uri=f'/guilds/{guild_id}/scheduled-events/{guild_scheduled_event_id}')
+
+    def modify_guild_scheduled_event(self, 
+        guild_id, 
+        guild_scheduled_event_id,
+        channel_id=None,
+        entity_metadata=None,
+        name: str=None,
+        privacy_level=None,
+        scheduled_start_time=None,
+        scheduled_end_time=None,
+        description: str=None,
+        entity_type=None,
+        status=None,
+        image=None
+    ) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-scheduled-event#modify-guild-scheduled-event'''
+        payload = {}
+        if channel_id != None:
+            payload['channel_id'] = channel_id
+        if entity_metadata != None:
+            payload['entity_metadata'] = entity_metadata
+        if name != None:
+            payload['name'] = name
+        if privacy_level != None:
+            payload['privacy_level'] = privacy_level
+        if scheduled_start_time != None:
+            payload['scheduled_start_time'] = scheduled_start_time
+        if scheduled_end_time != None:
+            payload['scheduled_end_time'] = scheduled_end_time
+        if description != None:
+            payload['description'] = description
+        if entity_type != None:
+            payload['entity_type'] = entity_type
+        if status != None:
+            payload['status'] = status
+        if image != None:
+            payload['image'] = image
+
+        return self._request('PATCH', params=payload, uri=f'/guilds/{guild_id}/scheduled-events/{guild_scheduled_event_id}')
+
+    def delete_guild_scheduled_evend(self, guild_id, guild_scheduled_event_id) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-scheduled-event#delete-guild-scheduled-event'''
+        return self._request('DELETE', uri=f'/guilds/{guild_id}/scheduled-events/{guild_scheduled_event_id}')
+
+    def get_guild_scheduled_event_users(self, 
+        guild_id, 
+        guild_scheduled_event_id,
+        limit: int=None,
+        with_member: bool=None,
+        before=None,
+        after=None
+    ) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-scheduled-event#get-guild-scheduled-event-users'''
+        params = {}
+        if limit != None:
+            params['limit'] = limit
+        if with_member != None:
+            params['with_member'] = with_member
+        if before != None:
+            params['before'] = before
+        if after != None:
+            params['after'] = after
+        return self._request('GET', params=params, uri=f'/guilds/{guild_id}/scheduled-events/{guild_scheduled_event_id}/users')
+
+    # -----======= T E M P L A T E S =======-----
+    def get_guild_template(self, template_code) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-template#get-guild-template'''
+        return self._request('GET', uri=f'/guilds/templates/{template_code}')
+
+    def create_guild_template(self, template_code, name: str, icon=None) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-template#create-guild-from-guild-template'''
+        return self._request('POST', uri=f'/guilds/templates/{template_code}')
+
+    def get_guild_templates(self, guild_id) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-template#get-guild-templates'''
+        return self._request('GET', uri=f'/guilds/{guild_id}/templates')
+
+    def create_guild_template(self, guild_id, name: str, description: str=None) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-template#create-guild-template'''
+        payload = { 'name': name}
+        if description != None:
+            payload['description'] = description
+        return self._request('POST', params=payload, uri=f'/guilds/{guild_id}/templates')
+
+    def sync_guild_template(self, guild_id, template_code) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-template#sync-guild-template'''
+        return self._request('PUT',  uri=f'/guilds/{guild_id}/templates/{template_code}')
+
+    def modify_guild_template(self, name: str=None, description: str=None) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-template#modify-guild-template'''
+        payload = {}
+        if name != None:
+            payload['name'] = name
+        if description != None:
+            payload['description'] = description
+        return self._request('PATCH', params=payload, uri=f'/guilds/{guild_id}/templates/{template_code}')
+
+    def delete_guild_template(self) -> dict:
+        '''https://discord.com/developers/docs/resources/guild-template#delete-guild-template'''
+        return self._request('DELETE', uri=f'/guilds/{guild_id}/templates/{template_code}')
+
+
+    # -----======= E M O J I =======-----
+    def list_guild_emojis(self, guild_id) -> dict:
+        '''https://discord.com/developers/docs/resources/emoji#list-guild-emojis'''
+        return self._request('GET', uri=f'/guilds/{guild_id}/emojis')
+        
+    def get_guild_emoji(self, guild_id, emoji_id) -> dict:
+        '''https://discord.com/developers/docs/resources/emoji#get-guild-emoji'''
+        return self._request('GET', uri=f'/guilds/{guild_id}/emojis/{emoji_id}')
+
+    def create_guild_emoji(self, guild_id, name: str, image, roles: list) -> dict:
+        '''https://discord.com/developers/docs/resources/emoji#create-guild-emoji'''
+        payload = {
+            'name': name,
+            'image': image,
+            'roles': roles
+        }
+        return self._request('POST', params=payload, uri=f'/guilds/{guild_id}/emojis')
+
+    def modify_guild_emoji(self, guild_id, emoji_id, name: str=None, roles: list=None) -> dict:
+        '''https://discord.com/developers/docs/resources/emoji#modify-guild-emoji'''
+        payload = {}
+        if name != None:
+            payload['name'] = name
+        if roles != None:
+            payload['roles'] = roles
+        return self._request('PATCH', params=payload, uri=f'/guilds/{guild_id}/emojis/{emoji_id}')
+
+    def delete_guild_emoji(self) -> dict:
+        '''https://discord.com/developers/docs/resources/emoji#delete-guild-emoji'''
+        return self._request('DELETE', uri=f'/guilds/{guild_id}/emojis/{emoji_id}')
+
+
+    # -----======= S T I C K E R  =======-----
+    def get_sticker(self, sticker_id) -> dict:
+        '''https://discord.com/developers/docs/resources/sticker#get-sticker'''
+        return self._request('GET', uri=f'/stickers/{sticker_id}')
+        
+    def list_nitro_sticker_packs(self) -> dict:
+        '''https://discord.com/developers/docs/resources/sticker#list-nitro-sticker-packs'''
+        return self._request('GET', uri=f'/sticker-packs')
+
+    def list_guild_stickers(self, guild_id) -> dict:
+        '''https://discord.com/developers/docs/resources/sticker#list-guild-stickers'''
+        return self._request('GET', uri=f'/guilds/{guild_id}/stickers')
+
+    def get_guild_sticker(self, guild_id, sticker_id) -> dict:
+        '''https://discord.com/developers/docs/resources/sticker#get-guild-sticker'''
+        return self._request('GET', uri=f'/guilds/{guild_id}/stickers/{sticker_id}')
+
+    def create_guild_sticker(self, guild_id, name: str, description: str, tags: str, file) -> dict:
+        '''https://discord.com/developers/docs/resources/sticker#create-guild-sticker'''
+        payload = {
+            'name': name,
+            'description': description,
+            'tags': tags,
+            'file': file
+        }
+        return self._request('POST', params=payload, uri=f'/guilds/{guild_id}/stickers')
+
+    def modify_guild_sticker(self, name: str=None, description: str=None, tags: str=None) -> dict:
+        '''https://discord.com/developers/docs/resources/sticker#modify-guild-sticker'''
+        payload = {}
+        if name != None:
+            payload['name'] = name
+        if description != None:
+            payload['description'] = description
+        if tags != None:
+            payload['tags'] = tags
+        return self._request('PATCH', params=payload, uri=f'/guilds/{guild_id}/stickers/{sticker_id}')
+
+    def delete_guild_sticker(self, guild_id, sticker_id) -> dict:
+        '''https://discord.com/developers/docs/resources/sticker#delete-guild-sticker'''
+        return self._request('DELETE', uri=f'/guilds/{guild_id}/stickers/{sticker_id}')

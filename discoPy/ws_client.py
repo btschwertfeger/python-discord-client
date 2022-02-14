@@ -27,17 +27,20 @@ class WSClient(object):
 
     _url = 'wss://gateway.discord.gg/?v=9&encording=json'
 
-    def __init__(self, token: str, intents: list, callback=None):
+    def __init__(self, token: str, intents: list, callback=None, url: str=None):
         self._log = logging.getLogger(__name__)
 
         self._token = token
         self._intents = np.sum([self._get_intents(intent) for intent in intents])
 
+        if url != None:
+            self._url = url
+
         self._callback = callback
         self._connect()
 
     async def _run(self) -> None:
-        self._log.info('Run!')
+        # self._log.info('Run!')
         try:
             keepwaiting = True
             async with ws.connect(self._url) as socket:
@@ -112,7 +115,7 @@ class WSClient(object):
         return self._heartbeat_interval
 
     def _get_payload(self, kind: str) -> dict:
-        # https://discord.com/developers/docs/topics/gateway#identifying
+        '''https://discord.com/developers/docs/topics/gateway#identifying'''
         op = None
         if kind == 'reconnect':
             op = 7
@@ -122,7 +125,6 @@ class WSClient(object):
             op = 2
         else:
             raise ValueError
-        print(self._intents)
         return {
             'op': op,
             'd': {
@@ -136,9 +138,9 @@ class WSClient(object):
                 'compress': True
             }
         }
-
-    def get_intents_list(self) -> list:
-        return self.all_intents
+    @classmethod
+    def get_intents_list(cls) -> list:
+        return cls.all_intents
 
     def _get_intents(self, intents: str) -> int:
         # https://discord.com/developers/docs/topics/gateway#gateway-intents

@@ -11,12 +11,12 @@ from setuptools import find_packages, setup, Command
 
 # Package meta-data.
 NAME = 'python-discord-client'
-DESCRIPTION = 'Connect to discord and get all activities via WS feed.'
+DESCRIPTION = 'Collection of Discord related clients and methods.'
 URL = 'https://github.com/btschwertfeger/python-discord-client'
 EMAIL = 'development@b-schwertfeger.de'
 AUTHOR = 'Benjamin Thomas Schwertfeger'
 REQUIRES_PYTHON = '>=3.7.0'
-VERSION = '0.5.1'
+VERSION = '0.7.2'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
@@ -89,6 +89,37 @@ class UploadCommand(Command):
 
         sys.exit()
 
+class TestUploadCommand(Command):
+    """Support setup.py test upload."""
+
+    description = 'Build and test publishing the package.'
+    user_options = []
+
+    @staticmethod
+    def status(s):
+        """Prints things in bold."""
+        print('\033[1m{0}\033[0m'.format(s))
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        try:
+            self.status('Removing previous builds…')
+            rmtree(os.path.join(here, 'dist'))
+        except OSError:
+            pass
+
+        self.status('Building Source and Wheel (universal) distribution…')
+        os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
+
+        self.status('Uploading the package to PyPI via Twine…')
+        os.system('twine upload --repository-url https://test.pypi.org/legacy/ dist/*')
+
+        sys.exit()
 
 # Where the magic happens:
 setup(
@@ -122,6 +153,7 @@ setup(
         #'Programming Language :: Python :: Implementation :: PyPy'
     ],
     cmdclass={
-        'upload': UploadCommand,
+        #'upload': UploadCommand,
+        'test': TestUploadCommand,
     },
 )

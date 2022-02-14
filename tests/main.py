@@ -2,15 +2,11 @@ import asyncio
 import websockets as ws
 import sys, os, traceback
 import logging 
-
-
 from dotenv import dotenv_values
 
 sys.path.append(os.environ.get('PROJECT_ROOT_DIR'))
-from python_discord_client.ws_client import WSClient
-from python_discord_client.client import Guild
-#from python_discord_client.ws_client import WSClient
-#from python_discord_client.client import Guild
+from discoPy.client import Application, User, Guild, Channel, Stage,  Webhook
+from discoPy.ws_client import WSClient
 
 # ----- ----- D O C U M E N T A T I O N ----- -----
 # https://discord.com/developers/docs/topics/gateway
@@ -23,20 +19,32 @@ logging.basicConfig(
 )
 
 token = dotenv_values('.pythonenv')['TOKEN'] # setup .pythonenv file or just type in your token 
-client = Guild(token=token)
-client.send_message(942319916005097472, 'Hello!')
-# print(client.get_guild(2909267986263572999))
-exit()
+
+# channel = Channel(token=token)
+# channel.create_message(channel_id='<some-channel-id>', content='Hello World!')
+
+# guild = Guild(token=token)
+# print(guild.get_guild(guild_id='<some-guild-id>'))
+
+# stage = Stage(token=token)
+# print(stage.get_stage_instance(channel_id='<some-channel-id>'))
+
+# app = Application(token=token)
+# app.get_application_commands(application_id='<some-app-id>')
+
+# user = User(token=token)
+# print(user.get_current_user())
+
 async def main():
     async def handle_event(data: dict):
         print(data) # <- comment this to avoid to many output
-        print('_____________________\n\n\n--------------------')
+        
         if not data or 'op' not in data:
             return 
 
         if data['op'] == 0:  # Dispatch
             try:
-                print(f'{data["d"]["channel_id"]} | {data["d"]["author"]["username"]}: {data["d"]["content"]}')
+                print(f'Channel: {data["d"]["channel_id"]} | {data["d"]["author"]["username"]}: {data["d"]["content"]}')
             except:
                 # handle... 
                 pass
@@ -60,13 +68,12 @@ async def main():
         else:
             print(f'huh? {data}')
 
+    #all_intents: list = WSClient.get_intents_list()
     ws_client = WSClient(
         token=token,
         intents=['DIRECT_MESSAGES', 'GUILDS'],
         callback=handle_event        
     )
-
-    
     while True:
         await asyncio.sleep(30) 
         
