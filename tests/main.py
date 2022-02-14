@@ -4,7 +4,7 @@ import sys, os, traceback
 import logging 
 from dotenv import dotenv_values
 
-sys.path.append(os.environ.get('PROJECT_ROOT_DIR'))
+#sys.path.append(os.environ.get('PROJECT_ROOT_DIR'))
 from discoPy.client import Application, User, Guild, Channel, Stage,  Webhook
 from discoPy.ws_client import WSClient
 

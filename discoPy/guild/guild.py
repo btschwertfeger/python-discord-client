@@ -1,4 +1,4 @@
-from python_discord_client.base_request.base_request import BaseRequestAPI
+from discoPy.base_request.base_request import BaseRequestAPI
 
 
 class GuildData(BaseRequestAPI):

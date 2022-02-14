@@ -3,6 +3,7 @@
 [![Generic badge](https://img.shields.io/badge/license-MIT-green.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/python-3.7+-blue.svg)](https://shields.io/)
 [![PyPI download month](https://img.shields.io/pypi/dm/python-discord-client.svg)](https://pypi.python.org/pypi/python-discord-client/)
+[![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/btschwertfeger/python-discord-client)
 
 Unofficial Python Discord SDK
 

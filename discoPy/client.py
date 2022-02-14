@@ -1,9 +1,9 @@
-from python_discord_client.user.user import UserData
-from python_discord_client.channel.channel import ChannelData
-from python_discord_client.guild.guild import GuildData
-from python_discord_client.stage.stage import StageData
-from python_discord_client.webhook.webhook import WebhookData
-from python_discord_client.application.application import ApplicationData
+from discoPy.user.user import UserData
+from discoPy.channel.channel import ChannelData
+from discoPy.guild.guild import GuildData
+from discoPy.stage.stage import StageData
+from discoPy.webhook.webhook import WebhookData
+from discoPy.application.application import ApplicationData
 
 class User(UserData):
     pass

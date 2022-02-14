@@ -16,7 +16,7 @@ URL = 'https://github.com/btschwertfeger/python-discord-client'
 EMAIL = 'development@b-schwertfeger.de'
 AUTHOR = 'Benjamin Thomas Schwertfeger'
 REQUIRES_PYTHON = '>=3.7.0'
-VERSION = '0.7.2'
+VERSION = '0.7.3.2'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
