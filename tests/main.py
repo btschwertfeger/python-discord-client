@@ -4,7 +4,7 @@ import sys, os, traceback
 import logging 
 from dotenv import dotenv_values
 
-#sys.path.append(os.environ.get('PROJECT_ROOT_DIR'))
+sys.path.append(os.environ.get('PROJECT_ROOT_DIR'))
 from discoPy.client import Application, User, Guild, Channel, Stage,  Webhook
 from discoPy.ws_client import WSClient
 
@@ -20,8 +20,36 @@ logging.basicConfig(
 
 token = dotenv_values('.pythonenv')['TOKEN'] # setup .pythonenv file or just type in your token 
 
-# channel = Channel(token=token)
-# channel.create_message(channel_id='<some-channel-id>', content='Hello World!')
+# no channel specified
+channel = Channel(token=token)
+
+# print(channel.create_message(
+#     channel_id=142319285924151308, 
+#     content='Hello World!', 
+#     embeds=[{
+#         'title': 'Look at these',
+#         'description': 'What a nice shot',
+#         'thumbnail': {
+#             "url": 'attachment://test.png'
+#         },
+#     }],
+#     attachments = [{
+#         'id': 0,
+#         'description': "Image of a cute little cat",
+#         'filename': "test.png"
+#     },{
+#         'id': 1,
+#         'description': "Image of a cute little cat",
+#         'filename': "test.png"
+#     }],
+#     files=['test.png', 'test.png']
+# ))
+
+# custom channel
+mychannel = Channel(token, channel_id=142319285924151308)
+mychannel.create_message(content='test')
+
+exit()
 
 # guild = Guild(token=token)
 # print(guild.get_guild(guild_id='<some-guild-id>'))
@@ -35,7 +63,7 @@ token = dotenv_values('.pythonenv')['TOKEN'] # setup .pythonenv file or just typ
 # user = User(token=token)
 # print(user.get_current_user())
 
-async def main():
+async def main() -> None:
     async def handle_event(data: dict):
         print(data) # <- comment this to avoid to many output
         
@@ -68,10 +96,10 @@ async def main():
         else:
             print(f'huh? {data}')
 
-    #all_intents: list = WSClient.get_intents_list()
+    all_intents: list = WSClient.get_intents_list()
     ws_client = WSClient(
         token=token,
-        intents=['DIRECT_MESSAGES', 'GUILDS'],
+        intents=all_intents,#['DIRECT_MESSAGES', 'GUILDS'],
         callback=handle_event        
     )
     while True:

@@ -58,7 +58,7 @@ import asyncio
 from discoPy.ws_client import WSClient
 
 token = 'your-discord-token'
-async def main():
+async def main() -> None:
     async def handle_event(data: dict):
         #print(data)
         if not data or 'op' not in data:

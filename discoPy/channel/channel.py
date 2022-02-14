@@ -1,17 +1,19 @@
 from discoPy.base_request.base_request import BaseRequestAPI
-
+import json
 class ChannelData(BaseRequestAPI):
     '''Contains a collection of channel related methods.'''
 
-    def __init__(self, token: str, url: str=None):
+    data = None
+    def __init__(self, token: str, channel_id=None, url: str=None):
         super().__init__(token, url)
-
+        if channel_id:
+            self.data = self.get_channel(channel_id=channel_id)
+            print(self.data)
     def get_channel(self, channel_id) -> dict:
         '''https://discord.com/developers/docs/resources/channel#get-channel'''
         return self._request('GET', uri=f'/channels/{channel_id}')
 
     def modify_channel(self, 
-        channel_id,
         name: str=None,     
         icon=None, 
         type: int=None,
@@ -29,7 +31,8 @@ class ChannelData(BaseRequestAPI):
         archived: bool=None,
         auto_archive_duration: int=None,
         locked: bool=None,
-        invitable: bool=None
+        invitable: bool=None,
+        **kwargs
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#modify-channel
             
@@ -94,18 +97,18 @@ class ChannelData(BaseRequestAPI):
             payload['locked'] = locked
         if invitable != None:
             payload['invitable'] = invitable
-        return self._request('PATCH', params=payload, uri=f'/channels/{channel_id}')
+        return self._request('PATCH', params=payload, uri=f'/channels/{self._get_channel_id(kwargs)}')
         
-    def delete_close_channel(self, channel_id) -> dict:
+    def delete_close_channel(self, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#deleteclose-channel'''
-        return self._request('DELETE', uri=f'/channels/{channel_id}')
+        return self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}')
 
     def get_channel_messages(self,
-        channel_id,
         around=None,
         before=None,
         after=None,
-        limit: int=None
+        limit: int=None,
+        **kwargs
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#get-channel-messages'''
         params = {}
@@ -117,25 +120,24 @@ class ChannelData(BaseRequestAPI):
             params['after'] = after
         if limit != None:
             params['limit'] = limit
-        return self._request('GET', params=params, uri=f'/channels/{channel_id}/messages')
+        return self._request('GET', params=params, uri=f'/channels/{self._get_channel_id(kwargs)}/messages')
 
-    def get_channel_message(self, channel_id) -> dict:
+    def get_channel_message(self, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#get-channel-message'''
-        return self._request('GET',uri=f'/channels/{channel_id}/messages')
+        return self._request('GET',uri=f'/channels/{self._get_channel_id(kwargs)}/messages')
 
     def create_message(self,
-        channel_id,
         content: str=None,
         tts: bool=None,
         embeds: [dict]=None,
         allowed_mentions=None,
         message_reference=None,
         components: list=None,
+        files: [str]=None,
+        attachments: [dict]=None,
         sticker_ids: list=None,
-        files=None,
-        payload_json: str=None,
-        attachments: list=None,
-        flags: int=None
+        flags: int=None,
+        **kwargs
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#create-message'''
 
@@ -152,76 +154,73 @@ class ChannelData(BaseRequestAPI):
             payload['components'] = components
         if sticker_ids != None:
             payload['sticker_ids'] = sticker_ids
-        if files != None:
-            payload['files'] = files
-        if payload_json != None:
-            payload['payload_json'] = payload_json
         if flags != None:
             payload['flags'] = flags
         if embeds != None:
-            payload['embeds'] = {}
-            for key in embeds:
-                payload['embeds'][key] = embeds[key]
-        if files != None or attachments != None:
-            self._session.update.headers({ 'content-type': 'multipart/form-data' })
-        response = self._request('POST', params=payload, uri=f'/channels/{channel_id}/messages')
-        if files != None or attachments != None:
-            self._session.update.headers({ 'content-type': 'application/json' })
-        return response
+            payload['embeds'] = embeds
+        if attachments != None:
+            payload['attachments'] = attachments
+        
+        uri = f'/channels/{self._get_channel_id(kwargs)}/messages'
+        if files != None:
+            return self._send_file_attachment(method='POST', uri=uri, file_names=files, payload=payload)
+        else:
+            return self._request(method='POST', uri=uri, params=payload)
 
-    def crosspost_message(self, channel_id, message_id) -> dict:
+    def crosspost_message(self, message_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#crosspost-message'''
-        response = self._request('POST', uri=f'/channels/{channel_id}/messages/{message_id}/crosspost')
+        response = self._request('POST', uri=f'/channels/{self._get_channel_id(kwargs)}/messages/{message_id}/crosspost')
 
-    def create_reaction(self, channel_id, message_id, emoji) -> dict:
+    def create_reaction(self, message_id, emoji, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#create-reaction
             "The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. 
             To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
         '''
-        response = self._request('PUT', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me')
+        response = self._request('PUT', uri=f'/channels/{self._get_channel_id(kwargs)}/messages/{message_id}/reactions/{emoji}/@me')
 
-    def delete_own_reaction(self, channel_id, message_id, emoji) -> dict:
+    def delete_own_reaction(self,  message_id, emoji, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#delete-own-reaction
             "The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. 
             To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
         '''
-        response = self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me')
+        response = self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}/messages/{message_id}/reactions/{emoji}/@me')
 
-    def delete_user_reaction(self, channel_id, message_id, user_id, emoji) -> dict:
+    def delete_user_reaction(self, message_id, user_id, emoji, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#delete-user-reaction
             "The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. 
             To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
         '''
+        response = self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}/messages/{message_id}/reactions/{emoji}/{user_id}')
 
-    def get_reactions(self, channel_id, message_id, emoji, after=None, limit: int=None) -> dict:
+    def get_reactions(self, message_id, emoji, after=None, limit: int=None, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#get-reactions
             "The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. 
             To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
         '''
-        response = self._request('GET', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}')
+        response = self._request('GET', uri=f'/channels/{self._get_channel_id(kwargs)}/messages/{message_id}/reactions/{emoji}')
 
-    def delete_all_reactions(self, channel_id, message_id) -> dict:
+    def delete_all_reactions(self, message_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#delete-all-reactions'''
-        response = self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions')
+        response = self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}/messages/{message_id}/reactions')
         
-    def delete_all_reactions_for_emoji(self, channel_id, message_id, emoji) -> dict:
+    def delete_all_reactions_for_emoji(self, message_id, emoji, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#delete-all-reactions-for-emoji
             "The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. 
             To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
         '''
-        response = self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}')
+        response = self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}/messages/{message_id}/reactions/{emoji}')
 
     def edit_message(self,
-        channel_id,
         message_id, 
         content: str=None,
         embeds: [dict]=None,
         flags: int=None,
         allowed_mentions=None,
         components=list,
-        files=None,
+        files: [str]=None,
         payload_json: str=None,
-        attachments: list=None
+        attachments: list=None,
+        **kwargs
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#edit-message'''
         payload = {}
@@ -233,33 +232,29 @@ class ChannelData(BaseRequestAPI):
             payload['allowed_mentions'] = allowed_mentions
         if components != None:
             payload['components'] = components
-        if files != None:
-            payload['files'] = files
         if payload_json != None:
             payload['payload_json'] = payload_json
         if attachments != None:
             payload['attachments'] = attachments
         if embeds != None:
-            payload['embeds'] = {}
-            for key in embeds:
-                payload['embeds'][key] = embeds[key]
-        if files != None or attachments != None:
-            self._session.update.headers({ 'content-type': 'multipart/form-data' })
-        response = self._request('PATCH', params=payload, uri=f'/channels/{channel_id}/messages/{message_id}')
-        if files != None or attachments != None:
-            self._session.update.headers({ 'content-type': 'application/json' })
-        return response
+            payload['embeds'] = embeds
 
-    def delete_message(self, channel_id, message_id) -> dict:
+        uri = f'/channels/{self._get_channel_id(kwargs)}/messages/{message_id}'
+        if files != None:
+            return self._send_file_attachment(method='POST', uri=uri, file_names=files, payload=payload)
+        else:
+            return self._request(method='POST', uri=uri, payload=payload)
+
+    def delete_message(self, message_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#delete-message'''
-        return self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}')
+        return self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}/messages/{message_id}')
 
-    def bulk_delete_message(self, channel_id, messages: list) -> dict:
+    def bulk_delete_message(self, messages: list, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#bulk-delete-messages'''
         paylaod = { 'messages': messages }
-        return self._request('POST', params=payload, uri=f'/channels/{channel_id}/messages/bulk-delete')
+        return self._request('POST', params=payload, uri=f'/channels/{self._get_channel_id(kwargs)}/messages/bulk-delete')
 
-    def edit_channel_permissions(self, channel_id, overwrite_id, allow=None, deny=None, type: int=None ) -> dict:
+    def edit_channel_permissions(self,overwrite_id, allow=None, deny=None, type: int=None, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#edit-channel-permissions'''
         payload = {}
         if allow != None:
@@ -268,11 +263,11 @@ class ChannelData(BaseRequestAPI):
             payload['deny'] = deny
         if type != None:
             payload['type'] = type
-        return self._request('PUT', params=payload, uri=f'/channels/{channel_id}/permissions/{overwrite_id}')
+        return self._request('PUT', params=payload, uri=f'/channels/{self._get_channel_id(kwargs)}/permissions/{overwrite_id}')
 
-    def get_channel_invites(self, channel_id) -> dict:
+    def get_channel_invites(self, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#get-channel-invites'''
-        return self._request('GET', uri=f'/channels/{channel_id}/invites')
+        return self._request('GET', uri=f'/channels/{self._get_channel_id(kwargs)}/invites')
 
     def create_channel_invite(self,
         max_age: int=None,
@@ -281,7 +276,8 @@ class ChannelData(BaseRequestAPI):
         unique: bool=None,
         target_type: int=None,
         target_user_id=None,
-        target_application_id=None
+        target_application_id=None,
+        **kwargs
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#create-channel-invite'''
         payload = {}
@@ -299,60 +295,60 @@ class ChannelData(BaseRequestAPI):
             payload['target_user_id'] = target_user_id
         if target_application_id != None:
             payload['target_application_id'] = target_application_id
-        return self._request('POST', params=payload, uri=f'/channels/{channel_id}/invites')
+        return self._request('POST', params=payload, uri=f'/channels/{self._get_channel_id(kwargs)}/invites')
 
-    def delete_channel_permission(self, channel_id, overwrite_id) -> dict:
+    def delete_channel_permission(self, overwrite_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#delete-channel-permission'''
-        return self._request('DELETE', uri=f'/channels/{channel_id}/permissions/{overwrite_id}')
+        return self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}/permissions/{overwrite_id}')
 
-    def follow_news_channel(self, channel_id, webhook_channel_id) -> dict:
+    def follow_news_channel(self, webhook_channel_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#follow-news-channel'''
         payload = { 'webhook_channel_id': webhook_channel_id }
-        return self._request('POST', params=payload, uri=f'/channels/{channel_id}/followers')
+        return self._request('POST', params=payload, uri=f'/channels/{self._get_channel_id(kwargs)}/followers')
 
-    def trigger_typing_indicatoe(channel_id) -> dict:
+    def trigger_typing_indicatoe(self, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#trigger-typing-indicator'''
-        return self._request('POST', uri=f'/channels/{channel_id}/typing')
+        return self._request('POST', uri=f'/channels/{self._get_channel_id(kwargs)}/typing')
 
-    def get_pinned_message(self, channel_id) -> dict:
+    def get_pinned_message(self, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#get-pinned-messages'''
-        return self._request('GET', uri=f'/channels/{channel_id}/pins')
+        return self._request('GET', uri=f'/channels/{self._get_channel_id(kwargs)}/pins')
 
-    def pin_message(self, channel_id, message_id) -> dict:
+    def pin_message(self, message_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#pin-message'''
-        return self._request('PUT', uri=f'/channels/{channel_id}/pins/{message_id}')
+        return self._request('PUT', uri=f'/channels/{self._get_channel_id(kwargs)}/pins/{message_id}')
 
-    def unpin_message(self, channel_id, message_id) -> dict:
+    def unpin_message(self, message_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#unpin-message'''
-        return self._request('DELETE', uri=f'/channels/{channel_id}/pins/{message_id}')
+        return self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}/pins/{message_id}')
 
-    def group_dm_add_recipient(self, channel_id, user_id, access_token, nick) -> dict:
+    def group_dm_add_recipient(self, user_id, access_token, nick, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#group-dm-add-recipient'''
         payload = {
             'access_token': access_token,
             'nick':nick
         }
-        return self._request('PUT', params=payload, uri=f'/channels/{channel_id}/recipients/{user_id}')
+        return self._request('PUT', params=payload, uri=f'/channels/{self._get_channel_id(kwargs)}/recipients/{user_id}')
 
-    def group_dm_remove_recipient(self, channel_id, user_id) -> dict:
+    def group_dm_remove_recipient(self, user_i, **kwargsd) -> dict:
         '''https://discord.com/developers/docs/resources/channel#group-dm-remove-recipient'''
-        return self._request('DELETE', uri=f'/channels/{channel_id}/recipients/{user_id}')
+        return self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}/recipients/{user_id}')
 
-    def start_thread_with_message(self, channel_id, user_id, name: str, auto_archive_duration: int=None, rate_limit_per_user: int=None) -> dict:
+    def start_thread_with_message(self, user_id, name: str, auto_archive_duration: int=None, rate_limit_per_user: int=None, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#start-thread-with-message'''
         payload = { 'name': name }
         if auto_archive_duration != None:
             payload['auto_archive_duration'] = auto_archive_duration
         if rate_limit_per_user != None:
             payload['rate_limit_per_user'] = rate_limit_per_user
-        return self._request('POST', params=payload, uri=f'/channels/{channel_id}/messages/{message_id}/threads')
+        return self._request('POST', params=payload, uri=f'/channels/{self._get_channel_id(kwargs)}/messages/{message_id}/threads')
 
     def start_thread_without_message(self, 
-        channel_id, 
         auto_archive_duration: str=None,
         type: int=None,
         invitable: bool=None,
-        rate_limit_per_user: int=None
+        rate_limit_per_user: int=None,
+        **kwargs
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#start-thread-without-message'''
         payload = { 'name': name }
@@ -364,64 +360,71 @@ class ChannelData(BaseRequestAPI):
             payload['invitable'] = invitable
         if rate_limit_per_user != None:
             payload['rate_limit_per_user'] = rate_limit_per_user
-        return self._request('POST', params=payload, uri=f'/channels/{channel_id}/threads')
+        return self._request('POST', params=payload, uri=f'/channels/{self._get_channel_id(kwargs)}/threads')
 
-    def join_thread(self, channel_id) -> dict:
+    def join_thread(self, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#join-thread'''
-        return self._request('PUT', uri=f'/channels/{channel_id}/thread-members/@me')
+        return self._request('PUT', uri=f'/channels/{self._get_channel_id(kwargs)}/thread-members/@me')
 
-    def add_thread_member(self, channel_id, user_id) -> dict:
+    def add_thread_member(self, user_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#add-thread-member'''
-        return self._request('PUT', uri=f'/channels/{channel_id}/thread-members/{user_id}')
+        return self._request('PUT', uri=f'/channels/{self._get_channel_id(kwargs)}/thread-members/{user_id}')
 
-    def leave_thread(self, channel_id) -> dict:
+    def leave_thread(self, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#leave-thread'''
-        return self._request('DELETE', uri=f'/channels/{channel_id}/thread-members/@me')
+        return self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}/thread-members/@me')
 
-    def remove_thread_member(self, channel_id, user_id) -> dict:
+    def remove_thread_member(self, user_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#remove-thread-member'''
-        return self._request('DELETE', uri=f'/channels/{channel_id}/thread-members/{user_id}')
+        return self._request('DELETE', uri=f'/channels/{self._get_channel_id(kwargs)}/thread-members/{user_id}')
 
-    def get_thread_member(self, channel_id, user_id) -> dict:
+    def get_thread_member(self, user_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#get-thread-member'''
-        return self._request('GET', uri=f'/channels/{channel_id}/thread-members/{user_id}')
+        return self._request('GET', uri=f'/channels/{self._get_channel_id(kwargs)}/thread-members/{user_id}')
 
-    def list_thread_member(self, channel_id) -> dict:
+    def list_thread_member(self, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#list-thread-members'''
-        return self._request('GET', uri=f'/channels/{channel_id}/thread-members')
+        return self._request('GET', uri=f'/channels/{self._get_channel_id(kwargs)}/thread-members')
 
-    def list_active_threads(self, channel_id, threads: list, members: list, has_more: bool) -> dict:
+    def list_active_threads(self,  threads: list, members: list, has_more: bool, **kwargs ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#list-active-threads'''
         params = {
             'threads': threads,
             'members': members,
             'has_more': has_more
         }
-        return self._request('GET', params=params, uri=f'/channels/{channel_id}/threads/active')
+        return self._request('GET', params=params, uri=f'/channels/{self._get_channel_id(kwargs)}/threads/active')
 
-    def list_public_archived_threads(self, channel_id, before=None, limit:int=None) -> dict:
+    def list_public_archived_threads(self, before=None, limit:int=None, **kwargs ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#list-public-archived-threads'''
         params = {}
         if before != None:
             params['before'] = before
         if limit != None:
             params['limit'] = limit
-        return self._request('GET', params=params, uri=f'/channels/{channel_id}/threads/archived/public')
+        return self._request('GET', params=params, uri=f'/channels/{self._get_channel_id(kwargs)}/threads/archived/public')
 
-    def list_private_archived_threads(self, channel_id) -> dict:
+    def list_private_archived_threads(self, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#list-private-archived-threads'''
         params = {}
         if before != None:
             params['before'] = before
         if limit != None:
             params['limit'] = limit
-        return self._request('GET', params=params, uri=f'/channels/{channel_id}/threads/archived/private')
+        return self._request('GET', params=params, uri=f'/channels/{self._get_channel_id(kwargs)}/threads/archived/private')
 
-    def list_joined_private_archived_threads(self, channel_id, before=None, limit:int=None) -> dict:
+    def list_joined_private_archived_threads(self, before=None, limit:int=None, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/channel#list-joined-private-archived-threads'''
         params = {}
         if before != None:
             params['before'] = before
         if limit != None:
             params['limit'] = limit
-        return self._request('GET', params=params, uri=f'/channels/{channel_id}/users/@me/threads/archived/private')
+        return self._request('GET', params=params, uri=f'/channels/{self._get_channel_id(kwargs)}/users/@me/threads/archived/private')
+
+    def _get_channel_id(self, kwargs) -> str:
+        try:
+            channel_id = kwargs.get('channel_id', None)
+            return channel_id if channel_id != None else self.data['id']
+        except:
+            raise ValueError('channel_id not defined!')

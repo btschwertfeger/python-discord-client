@@ -44,14 +44,14 @@ except FileNotFoundError:
     long_description = DESCRIPTION
 
 # Load the package's __version__.py module as a dictionary.
-about = {}
-if not VERSION:
-    project_slug = NAME.lower().replace('-', '_').replace(' ', '_')
-    with open(os.path.join(here, project_slug, '__version__.py')) as f:
-        exec(f.read(), about)
-else:
-    about['__version__'] = VERSION
+# about = {}
+# if not VERSION:
+#     project_slug = NAME.lower().replace('-', '_').replace(' ', '_')
+#     with open(os.path.join(here, project_slug, '__version__.py')) as f:
+#         exec(f.read(), about)
+# else:
 
+about['__version__'] = VERSION
 
 class UploadCommand(Command):
     """Support setup.py upload."""
@@ -153,7 +153,7 @@ setup(
         #'Programming Language :: Python :: Implementation :: PyPy'
     ],
     cmdclass={
-        #'upload': UploadCommand,
+        'upload': UploadCommand,
         'test': TestUploadCommand,
     },
 )
