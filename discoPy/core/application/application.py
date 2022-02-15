@@ -1,16 +1,14 @@
-from discoPy.base_request.base_request import BaseRequestAPI
-
-class ApplicationData(BaseRequestAPI):
+class Application(object):
     '''Contains a collection of application related methods.'''
 
-    def __init__(self, token: str, url: str=None):
-        super().__init__(token, url)
+    # async def __init__(self, token: str, url: str=None):
+    #     super().__init__(token, url)
 
-    def get_application_commands(self, application_id) -> dict:
+    async def get_application_commands(self, application_id) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#get-global-application-commands'''
-        return self._request('GET', uri=f'/applications/{application_id}/commands')
+        return await self._request('GET', uri=f'/applications/{application_id}/commands')
 
-    def create_application_command(self,
+    async def create_application_command(self,
         application_id,
         name: str,
         description: str,
@@ -29,13 +27,13 @@ class ApplicationData(BaseRequestAPI):
             payload['default_permission'] = default_permission
         if type != None:
             payload['type'] = type
-        return self._request('POST', params=payload, uri=f'/applications/{application_id}/commands')
+        return await self._request('POST', params=payload, uri=f'/applications/{application_id}/commands')
 
-    def get_global_application_command(self, application_id, command_id) -> dict:
+    async def get_global_application_command(self, application_id, command_id) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#get-global-application-command'''
-        return self._request('GET', uri=f'/applications/{application_id}/commands/{command_id}')
+        return await self._request('GET', uri=f'/applications/{application_id}/commands/{command_id}')
 
-    def edit_global_application_command(self, 
+    async def edit_global_application_command(self, 
         application_id,
         command_id,
         name: str=None,
@@ -53,21 +51,21 @@ class ApplicationData(BaseRequestAPI):
             payload['options'] = options
         if default_permission != None:
             payload['default_permission'] = default_permission
-        return self._request('PATCH', params=payload, uri=f'/applications/{application_id}/commands/{command_id}')
+        return await self._request('PATCH', params=payload, uri=f'/applications/{application_id}/commands/{command_id}')
 
-    def delete_global_application_command(self, application_id, command_id) -> dict:
+    async def delete_global_application_command(self, application_id, command_id) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#delete-global-application-command'''
-        return self._request('DELETE', uri=f'/applications/{application_id}/commands/{command_id}')
+        return await self._request('DELETE', uri=f'/applications/{application_id}/commands/{command_id}')
 
-    def bulk_overwrite_global_application_command(self, application_id) -> dict:
+    async def bulk_overwrite_global_application_command(self, application_id) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands'''
-        return self._request('PUT', uri=f'/applications/{application_id}/commands')
+        return await self._request('PUT', uri=f'/applications/{application_id}/commands')
 
-    def get_guild_application_commands(self, application_id, guild_id) -> dict:
+    async def get_guild_application_commands(self, application_id, guild_id) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#get-guild-application-commands'''
-        return self._request('GET', uri=f'/applications/{application_id}/guilds/{guild_id}/commands')
+        return await self._request('GET', uri=f'/applications/{application_id}/guilds/{guild_id}/commands')
 
-    def create_guild_application_command(self, 
+    async def create_guild_application_command(self, 
         application_id,
         guild_id,
         name: str,
@@ -87,13 +85,13 @@ class ApplicationData(BaseRequestAPI):
             payload['default_permission'] = default_permission
         if type != None:
             payload['type'] = type
-        return self._request('POST', params=payload,uri=f'/applications/{application_id}/guilds/{guild_id}/commands')
+        return await self._request('POST', params=payload,uri=f'/applications/{application_id}/guilds/{guild_id}/commands')
 
-    def get_guild_application_command(self, application_id, guild_id, command_id) -> dict:
+    async def get_guild_application_command(self, application_id, guild_id, command_id) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#get-guild-application-command'''
-        return self._request('GET', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}')
+        return await self._request('GET', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}')
 
-    def edit_guild_application_command(self,
+    async def edit_guild_application_command(self,
         application_id, 
         guild_id,
         command_id,
@@ -114,35 +112,35 @@ class ApplicationData(BaseRequestAPI):
             payload['default_permission'] = default_permission
         if type != None:
             payload['type'] = type
-        return self._request('PATCH', params=payload, uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}')
+        return await self._request('PATCH', params=payload, uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}')
 
-    def delete_guild_application_command(self, application_id, guild_id, command_id) -> dict:
+    async def delete_guild_application_command(self, application_id, guild_id, command_id) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#delete-guild-application-command'''
-        return self._request('DELETE', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}')
+        return await self._request('DELETE', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}')
 
-    def bulk_overwrite_guild_application_command(self, application_id, guild_id, new_commands: list=None) -> dict:
+    async def bulk_overwrite_guild_application_command(self, application_id, guild_id, new_commands: list=None) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-guild-application-commands'''
         params = {}
         if new_commands != None:
             params['new_commands'] = new_commands
-        return self._request('PUT', params=params, uri=f'/applications/{application_id}/guilds/{guild_id}/commands')
+        return await self._request('PUT', params=params, uri=f'/applications/{application_id}/guilds/{guild_id}/commands')
 
-    def get_guild_application_command_permissions(self, application_id, guild_id) -> dict:
+    async def get_guild_application_command_permissions(self, application_id, guild_id) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#get-guild-application-command-permissions'''
-        return self._request('GET', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/permissions')
+        return await self._request('GET', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/permissions')
 
-    def get_application_comman_permissions(self, application_id, guild_id, command_id) -> dict:
+    async def get_application_comman_permissions(self, application_id, guild_id, command_id) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#get-application-command-permissions'''
-        return self._request('GET', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions')
+        return await self._request('GET', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions')
 
-    def edit_application_command_permissions(self, application_id, guild_id, command_id, permissions: list) -> dict:
+    async def edit_application_command_permissions(self, application_id, guild_id, command_id, permissions: list) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#edit-application-command-permissions'''
         payload = { 'permissions': permissions }
-        return self._request('PUT', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions')
+        return await self._request('PUT', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions')
 
-    def batch_edit_application_command_permissions(self, application_id, guild_id, commands: [dict]) -> dict:
+    async def batch_edit_application_command_permissions(self, application_id, guild_id, commands: [dict]) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#batch-edit-application-command-permissions'''
-        return self._request('PUT', params=commands, uri=f'/applications/{application_id}/guilds/{guild_id}/commands/permissions')
+        return await self._request('PUT', params=commands, uri=f'/applications/{application_id}/guilds/{guild_id}/commands/permissions')
 
 
 

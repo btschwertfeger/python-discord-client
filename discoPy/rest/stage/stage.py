@@ -1,4 +1,4 @@
-from discoPy.base_request.base_request import BaseRequestAPI
+from discoPy.rest.base_request.base_request import BaseRequestAPI
 
 class StageData(BaseRequestAPI):
     '''Contains a collection of stage related methods.'''

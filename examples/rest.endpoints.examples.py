@@ -5,12 +5,8 @@ import logging
 from dotenv import dotenv_values
 
 sys.path.append(os.environ.get('PROJECT_ROOT_DIR'))
-from discoPy.client import Application, User, Guild, Channel, Stage,  Webhook
-from discoPy.ws_client import WSClient
-
-# ----- ----- D O C U M E N T A T I O N ----- -----
-# https://discord.com/developers/docs/topics/gateway
-
+from discoPy.rest.client import Application, User, Guild, Channel, Stage,  Webhook
+from discoPy.rest.ws_client import WSClient
 
 logging.basicConfig(
     #filename='example.log', filemode='w',
@@ -47,10 +43,9 @@ channel = Channel(token=token)
 
 # custom channel
 mychannel = Channel(token, channel_id=142319285924151308)
-mychannel.create_message(content='test')
+mychannel.create_message(content='Hello')
 
 exit()
-
 # guild = Guild(token=token)
 # print(guild.get_guild(guild_id='<some-guild-id>'))
 

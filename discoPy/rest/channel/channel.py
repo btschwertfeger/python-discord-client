@@ -1,5 +1,7 @@
-from discoPy.base_request.base_request import BaseRequestAPI
+from discoPy.rest.base_request.base_request import BaseRequestAPI
 import json
+
+
 class ChannelData(BaseRequestAPI):
     '''Contains a collection of channel related methods.'''
 
@@ -8,7 +10,8 @@ class ChannelData(BaseRequestAPI):
         super().__init__(token, url)
         if channel_id:
             self.data = self.get_channel(channel_id=channel_id)
-            print(self.data)
+            # print(self.data)
+            
     def get_channel(self, channel_id) -> dict:
         '''https://discord.com/developers/docs/resources/channel#get-channel'''
         return self._request('GET', uri=f'/channels/{channel_id}')

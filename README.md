@@ -7,14 +7,17 @@
 
 Unofficial Python Discord SDK
 
-Note: We have nothing to do with Discord and have not contributed to the Discord documentation!
+📍 Note: We have nothing to do with Discord and have not contributed to the Discord documentation!
+
+### 📍 This project is worked on daily. The releases available on PyPi may differ from those in the Github repository. So please see PyPi for working examples.
 
 # Features
 
 - Connect to your Discord account
 - Simple handling of authentication
-- Implement websockets
-- Access nearly all Discord REST endpoints
+- Access nearly all Discord REST endpoints (synchron and asynchron)
+- Websocket Client to receive almost all events
+- Create your custom Bots and manage your Guilds
 
 # Quick Start
 
@@ -26,14 +29,14 @@ Note: We have nothing to do with Discord and have not contributed to the Discord
 python3 -m pip install python-discord-client
 ```
 
-## Rest Clients
+## Synchron REST Clients
 
 ```python
-from discoPy.client import Application, User, Guild, Channel, Stage, Webhook
+from discoPy.rest.client import Application, User, Guild, Channel, Stage, Webhook
 
 token = 'your-discord-token'
-channel = Channel(token=token)
-channel.create_message(channel_id='<some-channel-id>', content='Hello World!')
+channel = Channel(token=token, channel_id='<some-channel-id>')
+channel.create_message(content='Hello World!')
 
 guild = Guild(token=token)
 print(guild.get_guild(guild_id='<some-guild-id>'))
@@ -51,58 +54,73 @@ print(user.get_current_user())
 
 ```
 
-## Websockets
+## Websockets / WS Client (asynchron)
 
 ```python
-import asyncio
-from discoPy.ws_client import WSClient
 
-token = 'your-discord-token'
-async def main() -> None:
-    async def handle_event(data: dict):
-        #print(data)
-        if not data or 'op' not in data:
+from discoPy.core.WSClient import WSClient
+import asyncio
+
+class CustomClient(WSClient):
+
+    async def on_event(self, event) -> None:
+        print(event) # <- comment this out
+        if not event or 'op' not in event:
             return
 
-        if data['op'] == 0:  # Dispatch
+        if event['op'] == 0:  # Dispatch
             try:
-                print(f'{data["d"]["channel_id"]}: ...print some messages?')
+                print(f'Channel: {data["d"]["channel_id"]} | {data["d"]["author"]["username"]}: {data["d"]["content"]}')
+                # if condition:
+                #    await self.create_message(
+                #           channel_id=channel_id, content='I love it!'
+                #    )
             except:
                 # handle...
                 pass
 
-        elif data['op'] == 3:  # Presence Update
-            print(f'This is OP 3 - {data}')
-        elif data['op'] == 4:  # Voice State Update
-            print(f'This is OP 4 - {data}')
-        elif data['op'] == 6:  # Resume
-            print(f'This is OP 6 - {data}')
-        elif data['op'] == 7:  # Reconnect
-            print(f'This is OP 7 - {data}')
-        elif data['op'] == 8:  # Request Guild Members
-            print(f'This is OP 8 - {data}')
-        elif data['op'] == 9:  # Invalid Session
-            print(f'This is OP 9 - Invalid Session!  {data}')
-        elif data['op'] == 10:  # Hello
+        elif event['op'] == 3:  # Presence Update
+            print(f'This is OP 3 - {event}')
+        elif event['op'] == 4:  # Voice State Update
+            print(f'This is OP 4 - {event}')
+        elif event['op'] == 6:  # Resume
+            print(f'This is OP 6 - {event}')
+        elif event['op'] == 7:  # Reconnect
+            print(f'This is OP 7 - {event}')
+        elif event['op'] == 8:  # Request Guild Members
+            print(f'This is OP 8 - {event}')
+        elif event['op'] == 9:  # Invalid Session
+            print(f'This is OP 9 - Invalid Session! {event}')
+        elif event['op'] == 10:  # Hello
             print('Hearbeat interval received!')
-        elif data['op'] == 11:  # Heartbeat ACK
+        elif event['op'] == 11:  # Heartbeat ACK
             print('Heartbeat Received')
         else:
-            print(f"huh? {data}")
+            print(f"huh? {event}")
+
+
+async def main() -> None:
+    token = '<discord-bot-token>'
 
     #all_intents: list = WSClient.get_intents_list()
-    ws_client = WSClient(
+    ws_client = CustomClient(
         token=token,
         intents=['DIRECT_MESSAGES', 'GUILDS'],
-        callback=handle_event
     )
+
+    # Almost every endpoint can be accessed via the websocket client.
+    print(await myclient.get_current_user())
+    print(await myclient.get_channel('<some-channel-id>'))
+    # ...
+
+    myclient.run() # opens the websocket connection to receive events
 
     while True:
         await asyncio.sleep(30)
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    asyncio.get_event_loop().run_until_complete(main())
+
 ```
 
 # Important notes
@@ -113,6 +131,8 @@ On the official page of the Discord API documentation you can see which requirem
 Note: We have nothing to do with Discord and have not contributed to the Discord documentation!
 
 # Methods
+
+All methods below are available via the Rest and Websocket Clients.
 
 ## Application
 

@@ -16,11 +16,11 @@ URL = 'https://github.com/btschwertfeger/python-discord-client'
 EMAIL = 'development@b-schwertfeger.de'
 AUTHOR = 'Benjamin Thomas Schwertfeger'
 REQUIRES_PYTHON = '>=3.7.0'
-VERSION = '0.7.3.2'
+VERSION = None#'0.7.3.2' # 0.7.3.2 was the last
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'requests', 'websockets', 'asyncio>=3.4',
+    'requests', 'websockets', 'asyncio>=3.4', 'aiohttp'
 ]
 
 # What packages are optional?
@@ -44,14 +44,14 @@ except FileNotFoundError:
     long_description = DESCRIPTION
 
 # Load the package's __version__.py module as a dictionary.
-# about = {}
-# if not VERSION:
-#     project_slug = NAME.lower().replace('-', '_').replace(' ', '_')
-#     with open(os.path.join(here, project_slug, '__version__.py')) as f:
-#         exec(f.read(), about)
-# else:
-
-about['__version__'] = VERSION
+about = {}
+if not VERSION:
+    project_slug = 'discoPy'
+    with open(os.path.join(here, project_slug, '__version__.py')) as f:
+        exec(f.read(), about)
+else:  
+    raise ValueError('Version not found!')
+    exit()#about['__version__'] = VERSION
 
 class UploadCommand(Command):
     """Support setup.py upload."""
