@@ -24,8 +24,11 @@ from discoPy.core.channel.channel import Channel
 from discoPy.core.stage.stage import Stage
 from discoPy.core.user.user import User
 from discoPy.core.webhook.webhook import Webhook
-
-class BaseClient(Application, Guild, Channel, Stage, User, Webhook):
+from discoPy.utils.permissions import Permissions
+class BaseClient(
+    Application, Guild, Channel, Stage, User, Webhook,
+    Permissions
+):
 
     BASE_URL = 'https://discord.com/api/v9'
     TIMEOUT = 10
@@ -95,7 +98,7 @@ class BaseClient(Application, Guild, Channel, Stage, User, Webhook):
                 print('!')
 
     async def _check_response(self, response) -> dict:
-        if response.status == 200:
+        if f'{response.status}'[0] == '2':
             try:
                  data = await response.json()
             except ValueError:

@@ -171,10 +171,9 @@ class GuildData(BaseRequestAPI):
             payload['parent_id'] = parent_id
         return self._request(method='PATCH', params=payload, uri=f'/guilds/{guild_id}/channels')
 
-    def list_active_threads(self, guild_id, threads: list, members: list, **kwargs) -> dict:
+    def list_active_threads(self, guild_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/guild#list-active-threads'''
-        payload = { 'threads': threads, 'members': members }
-        return self._request(method='GET', params=payload, uri=f'/guilds/{guild_id}/threads/active')
+        return self._request(method='GET', uri=f'/guilds/{guild_id}/threads/active')
 
     def get_guild_member(self, guild_id, user_id, **kwargs) -> dict:
         '''https://discord.com/developers/docs/resources/guild#get-guild-member'''

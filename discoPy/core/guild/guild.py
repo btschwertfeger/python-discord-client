@@ -53,6 +53,7 @@ class Guild(object):
         return await self._request(method='GET', uri=f'/guilds/{guild_id}/preview')
 
     async def modify_guild(self,
+        guild_id,
         name: str,
         region: str=None,
         verification_level: int=None,
@@ -161,10 +162,9 @@ class Guild(object):
             payload['parent_id'] = parent_id
         return await self._request(method='PATCH', params=payload, uri=f'/guilds/{guild_id}/channels')
 
-    async def list_active_threads(self, guild_id, threads: list, members: list) -> dict:
+    async def list_active_threads(self, guild_id) -> dict:
         '''https://discord.com/developers/docs/resources/guild#list-active-threads'''
-        payload = { 'threads': threads, 'members': members }
-        return await self._request(method='GET', params=payload, uri=f'/guilds/{guild_id}/threads/active')
+        return await self._request(method='GET', uri=f'/guilds/{guild_id}/threads/active')
 
     async def get_guild_member(self, guild_id, user_id) -> dict:
         '''https://discord.com/developers/docs/resources/guild#get-guild-member'''

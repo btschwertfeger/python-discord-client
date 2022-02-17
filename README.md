@@ -132,7 +132,7 @@ Note: We have nothing to do with Discord and have not contributed to the Discord
 
 # Methods
 
-All methods below are available via the Rest and Websocket Clients.
+All methods below are available via the REST and Websocket Clients.
 
 ## Application
 

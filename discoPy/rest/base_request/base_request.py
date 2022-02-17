@@ -83,7 +83,7 @@ class BaseRequestAPI(object):
 
     @staticmethod
     def check_response(response_data) -> dict:
-        if response_data.status_code == 200:
+        if f'{response.status}'[0] == '2':
             try:
                 data = response_data.json()
                 # print(response_data.request.prepare_headers)
