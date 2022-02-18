@@ -3,8 +3,9 @@ import numpy as np
 
 
 class Permissions(object):
+    '''Object to store and access User and Bot Permissions'''
 
-    ROLES = [
+    _roles = [
         'CREATE_INSTANT_INVITE', 'KICK_MEMBERS', 'BAN_MEMBERS', 'ADMINISTRATOR'
         'MANAGE_CHANNELS', 'MANAGE_GUILD','ADD_REACTIONS', 'VIEW_AUDIT_LOG',
         'PRIORITY_SPEAKER', 'STREAM', 'VIEW_CHANNEL',
@@ -18,11 +19,12 @@ class Permissions(object):
         'CREATE_PUBLIC_THREADS', 'CREATE_PRIVATE_THREADS', 'USE_EXTERNAL_STICKERS',
         'SEND_MESSAGES_IN_THREADS', 'START_EMBEDDED_ACTIVITIES', 'MODERATE_MEMBERS',
     ]
+
     def list_roles(self) -> [str]:
-        return self.ROLES
+        return self._roles
 
     def get_role(self, role_name: str='') -> int:
-        for i, role in enumerate(self.ROLES):
+        for i, role in enumerate(self._roles):
             if role == role_name:
                 return (1<<i)
         raise ValueError(f'Role {role_name} not found!')

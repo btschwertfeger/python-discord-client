@@ -243,8 +243,8 @@ class Guild(object):
 
     async def create_guild_role(self, 
         guild_id, name: str, permissions: str, 
-        color: int, hoist: bool, icon, unicode_emoji: str, 
-        mentionable: bool
+        color: int=0, hoist: bool=False, icon=None, unicode_emoji: str=None, 
+        mentionable: bool=False
     ) -> dict:
         '''https://discord.com/developers/docs/resources/guild#create-guild-role'''
         payload = {

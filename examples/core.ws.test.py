@@ -38,16 +38,21 @@ class CustomClient(WSClient):
 
 
 async def main() -> None:
-    token = dotenv_values('.pythonenv')['TOKEN']
+    config = dotenv_values('.pythonenv')
+    token = config['TOKEN']
+    channel_id = config['DEFAULT_CHANNEL_ID']
+    guild_id = config['DEFAULT_GUILD_ID']
 
     myclient = CustomClient( 
         token = token,
         intents=WSClient.get_intents_list(),
     )
-    channel_id = '142319285924151308'
+    
     print(await myclient.get_current_user())
     print(await myclient.get_channel(channel_id=channel_id))
     print(await myclient.create_message(channel_id=channel_id, content="Hello!"))
+
+    print(myclient.list_roles())
     myclient.run()
 
     while True:

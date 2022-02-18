@@ -40,7 +40,7 @@ async def main() -> None:
     )
 
     # ---===== CREATE GUILD =====---
-    # print( await myclient.create_guild(
+    # print(await myclient.create_guild(
     #     name = 'SomeNiceTestingGuild1',
     #     verification_level=3, # member longer than 10 minutes
     #     default_message_notifications=0, # default messagin
@@ -92,7 +92,7 @@ async def main() -> None:
     
     # print(await myclient.search_guild_members(default_guild_id,query='user', limit=10))
 
-    # =======----> print(await myclientadd_guild_member(
+    # =======----> print(await myclient.add_guild_member(
     #     guild_id=default_guild_id, 
     #     user_id='hjbdf', 
     #     access_token= 'OAuth2token', 
@@ -101,6 +101,120 @@ async def main() -> None:
     #     mute=True,
     #     deaf=True
     # ))
+
+    xxx = 'testuserid'
+    # ======---> print(await myclient.remove_guild_member_role(
+    #     guild_id=default_guild_id,
+    #     user_id=xxx,
+    #     role_id=123456
+    # ))
+
+    # ======---> print(await myclient.remove_guild_member(
+    #     guild_id=default_guild_id,
+    #     user_id=xxx
+    # ))
+
+    # print(await myclient.get_guild_bans(guild_id=default_guild_id))
+    # print(await myclient.get_guild_ban(guild_id=default_guild_id,user_id=xxx))
+    # ======---> print(await myclient.create_guild_ban(guild_id=default_guild_id, user_id=xxx,delete_message_days=14,reason='noob'))
+    # ======---> print(await myclient.remove_guild_ban(guild_id=default_guild_id, user_id=xxx))
+    # print(await myclient.get_guild_roles(guild_id=default_guild_id))
+    # print(await myclient.create_guild_role(guild_id=default_guild_id,name='admin',permissions=(1<<3)))
+    # =======---> print(await myclient.modify_guild_role_permissions(guild_id=default_guild_id, id='someroleid', name='adminnew'))
+
+    someroleid = 1
+    print(await myclient.modify_guild_role(
+        guild_id=default_guild_id,
+        role_id=someroleid,
+        name='newguildrolename'
+    ))
+
+    print(await myclient.delete_guild_role(
+        guild_id=default_guild_id,
+        role_id=someroleid
+    ))
+
+
+    print(await myclient.get_guild_prune_count(
+        guild_id=default_guild_id,
+        days=14,
+        # include_roles=
+    ))
+
+    print(await myclient.beginn_guild_prune(
+        guild_id=default_guild_id,
+        days=14, 
+        compute_prune_count=True,
+        #  include_roles=
+    ))
+
+    print(await myclient.get_guild_voice_regions(guild_id=default_guild_id))
+
+    print(await myclient.get_guild_invites(guild_id=default_guild_id))
+
+    print(await myclient.get_guild_integrations(guild_id=default_guild_id))
+
+    # print(await myclient.delete_guild_integrations(
+    #     guild_id=default_guild_id,
+    #     integration_id=
+    # ))
+
+    print(await myclient.get_guild_widget_settings(guild_id=default_guild_id))
+
+
+    print(await myclient.modify_guild_widget(
+        guild_id=default_guild_id,
+        settings={}
+    ))
+    print(await myclient.get_guild_widget(guild_id=default_guild_id))
+    print(await myclient.get_guild_vanity_url(guild_id=default_guild_id))
+    # print(await myclient.get_guild_widget_image(guild_id=default_guild_id,style=))
+    print(await myclient.get_guild_welcome_screen(guild_id=default_guild_id))
+    print(await myclient.modify_guild_welcome_screen(guild_id=default_guild_id))
+    print(await myclient.modify_current_user_voice_state(
+        guild_id=default_guild_id,
+        channel_id=default_channel_id,
+        suppress=False,
+    ))
+
+    print(await myclient.modify_user_voice_state(
+        guild_id=default_guild_id,
+        channel_id=default_channel_id,
+        suppress=False,
+    ))
+
+    print(await myclient.get_guild_audit_log(
+        guild_id=default_guild_id,
+
+    ))
+
+    # ----========== SHEDULED EVENTS ========-------
+    # print(await myclient.list_scheduled_events_for_guild(guild_id=default_guild_id, with_user_count=True))
+    # print(await myclient.create_guild_scheduled_event(
+    #     guild_id=default_guild_id,
+    #     name='Some New Event Name',
+    #     entity_type=
+    #     privacy_level=,
+    #     scheduled_start_time=,
+    #     scheduled_end_time=,
+    #     description='Some description',
+    # ))
+
+    # print(await myclient.get_guild_scheduled_event(
+    #     guild_id=default_guild_id,
+    #     guild_scheduled_event_id=,
+    #     with_user_count=False,
+    # ))
+
+    # print(await myclient.modify_guild_scheduled_event(
+    #     guild_id=default_guild_id,
+    #     guild_scheduled_event_id=,
+    #     channel_id=default_channel_id
+    # ))
+
+
+
+
     # myclient.run()
 
     # while True:
