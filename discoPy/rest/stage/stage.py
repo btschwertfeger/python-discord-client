@@ -10,10 +10,10 @@ class StageData(BaseRequestAPI):
         '''https://discord.com/developers/docs/resources/stage-instance#create-stage-instance'''
         payload = {
             'channel_id': channel_id,
-            'topic': topic
+            'topic': topic,
+            'privacy_level': privacy_level
         }
-        if privacy_level != None:
-            payload['privacy_level'] = privacy_level
+        payload = {k:v for k,v in payload.items() if v is not None}
         return self._request('POST', params=payload, uri=f'/stage-instances')
 
     def get_stage_instance(self, channel_id) -> dict:
@@ -22,11 +22,8 @@ class StageData(BaseRequestAPI):
 
     def modify_stage_instance(self, topic: str=None, privacy_level=None) -> dict:
         '''https://discord.com/developers/docs/resources/stage-instance#modify-stage-instance'''
-        payload = {}
-        if topic != None:
-            payload['topic'] = topic
-        if privacy_level != None:
-            payload['privacy_level'] = privacy_level
+        payload = { 'topic': topic, 'privacy_level': privacy_level }
+        payload = {k:v for k,v in payload.items() if v is not None}
         return self._request('PATCH', params=payload, uri=f'/stage-instances/{channel_id}')
 
     def delete_stage_instance(self) -> dict:

@@ -117,7 +117,7 @@ class TestUploadCommand(Command):
         os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
 
         self.status('Uploading the package to PyPI via Twine…')
-        os.system('twine upload --repository-url https://test.pypi.org/legacy/ dist/*')
+        os.system('twine upload -r testpypi dist/*')#--repository-url https://test.pypi.org/legacy/ dist/*')
 
         sys.exit()
 

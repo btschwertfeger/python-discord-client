@@ -82,14 +82,13 @@ class BaseRequestAPI(object):
         return response
 
     @staticmethod
-    def check_response(response_data) -> dict:
-        if f'{response.status}'[0] == '2':
+    def check_response(response) -> dict:
+        if f'{response.status_code}'[0] == '2':
             try:
-                data = response_data.json()
-                # print(response_data.request.prepare_headers)
+                data = response.json()
             except ValueError:
-                raise Exception(response_data.content)
+                raise Exception(response.content)
             else:
                 return data
         else:
-            raise Exception(f'{response_data.status_code}: {response_data.text}')
+            raise Exception(f'{response.status_code}: {response.text}')

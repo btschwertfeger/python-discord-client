@@ -35,8 +35,8 @@ python3 -m pip install python-discord-client
 from discoPy.rest.client import Application, User, Guild, Channel, Stage, Webhook
 
 token = 'your-discord-token'
-channel = Channel(token=token, channel_id='<some-channel-id>')
-channel.create_message(content='Hello World!')
+channel = Channel(token=token)
+channel.create_message(channel_id='<some-channel-id>', content='Hello World!')
 
 guild = Guild(token=token)
 print(guild.get_guild(guild_id='<some-guild-id>'))

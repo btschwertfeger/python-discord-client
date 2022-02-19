@@ -59,9 +59,10 @@ async def main() -> None:
     #     }]
     # ))
 
-    # print(await myclient.get_guild_preview(default_guild_id))
-    # print(await myclient.get_guild(default_guild_id))
+    print(await myclient.get_guild_preview(default_guild_id))
+    print(await myclient.get_guild(default_guild_id))
 
+    exit()
     # =========----> print(await myclient.modify_guild(
     #   uild_id=default_guild_id
     #   name='somenewname'
