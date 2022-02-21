@@ -4,12 +4,12 @@ class Stage(object):
 
     async def create_stage_instance(self, channel_id, topic: str, privacy_level: int=None) -> dict:
         '''https://discord.com/developers/docs/resources/stage-instance#create-stage-instance'''
-        payload = {
+        payload: dict = {
             'channel_id': channel_id,
             'topic': topic,
             'privacy_level': privacy_level
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('POST', params=payload, uri=f'/stage-instances')
 
     async def get_stage_instance(self, channel_id) -> dict:
@@ -18,8 +18,8 @@ class Stage(object):
 
     async def modify_stage_instance(self, topic: str=None, privacy_level=None) -> dict:
         '''https://discord.com/developers/docs/resources/stage-instance#modify-stage-instance'''
-        payload = { 'topic': topic, 'privacy_level': privacy_level }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'topic': topic, 'privacy_level': privacy_level }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('PATCH', params=payload, uri=f'/stage-instances/{channel_id}')
 
     async def delete_stage_instance(self) -> dict:

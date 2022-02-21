@@ -15,34 +15,33 @@ class WSClient(object):
         @param: token (str): required 
         @param: url (str):  required
     '''
-    _heartbeat_interval = 41250 / 1000 # in seconds
+    _heartbeat_interval: int = int(41250 / 1000) # in seconds
     _last_ping = None
     _sequence = None
 
-    all_intents = [
+    all_intents: dict = [
         'GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_EMOJIS_AND_STICKERS', 'GUILD_INTEGRATIONS', 'GUILD_WEBHOOKS',
         'GUILD_INVITES', 'GUILD_VOICE_STATES', 'GUILD_PRESENCES', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS',
         'GUILD_MESSAGE_TYPING', 'DIRECT_MESSAGES','DIRECT_MESSAGE_REACTIONS', 'GUILD_SCHEDULED_EVENTS', 'GUILD_SCHEDULED_EVENTS'
     ]
 
-    _url = 'wss://gateway.discord.gg/?v=9&encording=json'
+    _url: str = 'wss://gateway.discord.gg/?v=9&encording=json'
 
     def __init__(self, token: str, intents: list, callback=None, url: str=None):
         self._log = logging.getLogger(__name__)
 
-        self._token = token
-        self._intents = np.sum([self._get_intents(intent) for intent in intents])
+        self._token: str = token
+        self._intents: [str] = np.sum([self._get_intents(intent) for intent in intents])
 
         if url != None:
-            self._url = url
+            self._url: str = url
 
         self._callback = callback
         self._connect()
 
     async def _run(self) -> None:
-        # self._log.info('Run!')
         try:
-            keepwaiting = True
+            keepwaiting: bool = True
             async with ws.connect(self._url) as socket:
                 self.ws = socket
                 await self._authenticate() 
@@ -116,7 +115,7 @@ class WSClient(object):
 
     def _get_payload(self, kind: str) -> dict:
         '''https://discord.com/developers/docs/topics/gateway#identifying'''
-        op = None
+        op: int = None
         if kind == 'reconnect':
             op = 7
         elif kind == 'resume':

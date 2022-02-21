@@ -13,18 +13,18 @@ class User(object):
 
     async def modify_current_user(self, username: str=None, avatar=None) -> dict:
         '''https://discord.com/developers/docs/resources/user#modify-current-user'''
-        payload = { 'username': username, 'avatar': avatar}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'username': username, 'avatar': avatar}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request(method='PATCH', params=payload, uri=f'/users/@me')
 
     async def get_current_user_guilds(self, before=None, after=None, limit: int=None) -> dict:
         '''https://discord.com/developers/docs/resources/user#get-current-user-guilds'''
-        payload = { 
+        payload: dict = { 
             'before': before,
             'after': after,
             'limit': limit,
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request(method='GET', params=payload, uri=f'/users/@me/guilds')
 
     async def get_current_user_guild_member(self, guild_id) -> dict:
@@ -37,12 +37,12 @@ class User(object):
 
     async def create_dm(self, recipient_id) -> dict:
         '''https://discord.com/developers/docs/resources/user#create-dm'''
-        payload = { 'recipient_id': recipient_id }
+        payload: dict = { 'recipient_id': recipient_id }
         return await  self._request(method='POST', params=payload, uri=f'/users/@me/channels')
 
     async def create_group_dm(self, access_tokens: list, nicks: dict) -> dict:
         '''https://discord.com/developers/docs/resources/user#create-group-dm'''
-        payload = {
+        payload: dict = {
             'access_tokens': access_tokens,
             'nicks': nicks
         }
@@ -58,12 +58,12 @@ class User(object):
 
     async def get_invite(self, invite_code, with_counts: bool=None, with_expiration: bool=None, guild_scheduled_event_id=None) -> dict:
         '''https://discord.com/developers/docs/resources/invite#get-invite'''
-        payload = {
+        payload: dict = {
             'with_counts': with_counts,
             'with_expiration': with_expiration,
             'guild_scheduled_event_id': guild_scheduled_event_id
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request(method='GET', params=payload, uri=f'/invites/{invite_code}')
 
     async def delete_invite(self, invite_code) -> dict:

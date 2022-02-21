@@ -55,7 +55,7 @@ class Channel(object):
                 @invitable
                 @rate_limit_per_user
         '''
-        payload = {
+        payload: dict = {
             'name': name,
             'icon': icon,
             'type': type,
@@ -74,7 +74,7 @@ class Channel(object):
             'locked': locked,
             'invitable': invitable
         }        
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request('PATCH', params=payload, uri=f'/channels/{channel_id}')
         
     async def delete_close_channel(self, channel_id) -> dict:
@@ -89,13 +89,13 @@ class Channel(object):
         limit: int=None,
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#get-channel-messages'''
-        payload = {
+        payload: dict = {
             'around': around,
             'before': before,
             'after': after,
             'limit': limit
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request('GET', params=payload, uri=f'/channels/{channel_id}/messages')
 
     async def get_channel_message(self) -> dict:
@@ -117,7 +117,7 @@ class Channel(object):
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#create-message'''
 
-        payload = {
+        payload: dict = {
             'content': content,
             'tts': tts,
             'allowed_mentions': allowed_mentions,
@@ -128,7 +128,7 @@ class Channel(object):
             'embeds': embeds,
             'attachments': attachments
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         uri = f'/channels/{channel_id}/messages'
         if files != None:
             return await  self._send_file_attachment(method='POST', uri=uri, file_names=files, payload=payload)
@@ -192,7 +192,7 @@ class Channel(object):
         **kwargs
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#edit-message'''
-        payload = {
+        payload: dict = {
             'content': content,
             'flags': flags,
             'allowed_mentions': allowed_mentions,
@@ -201,7 +201,7 @@ class Channel(object):
             'attachments': attachments,
             'embeds': embeds
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         uri = f'/channels/{channel_id}/messages/{message_id}'
         if files != None:
             return await  self._send_file_attachment(method='POST', uri=uri, file_names=files, payload=payload)
@@ -219,12 +219,12 @@ class Channel(object):
 
     async def edit_channel_permissions(self, channel_id, overwrite_id, allow=None, deny=None, type: int=None) -> dict:
         '''https://discord.com/developers/docs/resources/channel#edit-channel-permissions'''
-        payload = {
+        payload: dict = {
             'allow': allow,
             'deny': deny,
             'type': type
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request('PUT', params=payload, uri=f'/channels/{channel_id}/permissions/{overwrite_id}')
 
     async def get_channel_invites(self, channel_id) -> dict:
@@ -242,7 +242,7 @@ class Channel(object):
         target_application_id=None,
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#create-channel-invite'''
-        payload = {
+        payload: dict = {
             'max_age': max_age,
             'max_uses': max_uses,
             'temporary': temporary,
@@ -251,7 +251,7 @@ class Channel(object):
             'target_user_id': target_user_id,
             'target_application_id': target_application_id
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request('POST', params=payload, uri=f'/channels/{channel_id}/invites')
 
     async def delete_channel_permission(self, channel_id, overwrite_id) -> dict:
@@ -260,7 +260,7 @@ class Channel(object):
 
     async def follow_news_channel(self, channel_id, webhook_channel_id) -> dict:
         '''https://discord.com/developers/docs/resources/channel#follow-news-channel'''
-        payload = { 'webhook_channel_id': webhook_channel_id }
+        payload: dict = { 'webhook_channel_id': webhook_channel_id }
         return await  self._request('POST', params=payload, uri=f'/channels/{channel_id}/followers')
 
     async def trigger_typing_indicatoe(self, channel_id) -> dict:
@@ -281,11 +281,11 @@ class Channel(object):
 
     async def group_dm_add_recipient(self, channel_id, user_id, access_token, nick) -> dict:
         '''https://discord.com/developers/docs/resources/channel#group-dm-add-recipient'''
-        payload = {
+        payload: dict = {
             'access_token': access_token,
             'nick':nick
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request('PUT', params=payload, uri=f'/channels/{channel_id}/recipients/{user_id}')
 
     async def group_dm_remove_recipient(self, channel_id, user_id) -> dict:
@@ -294,12 +294,12 @@ class Channel(object):
 
     async def start_thread_with_message(self, channel_id, user_id, name: str, auto_archive_duration: int=None, rate_limit_per_user: int=None) -> dict:
         '''https://discord.com/developers/docs/resources/channel#start-thread-with-message'''
-        payload = { 
+        payload: dict = { 
             'name': name,
             'auto_archive_duration': auto_archive_duration,
             'rate_limit_per_user': rate_limit_per_user
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request('POST', params=payload, uri=f'/channels/{channel_id}/messages/{message_id}/threads')
 
     async def start_thread_without_message(self, 
@@ -310,14 +310,14 @@ class Channel(object):
         rate_limit_per_user: int=None,
     ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#start-thread-without-message'''
-        payload = { 
+        payload: dict = { 
             'name': name,
             'auto_archive_duration': auto_archive_duration,
             'type': type,
             'invitable': invitable,
             'rate_limit_per_user': rate_limit_per_user
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request('POST', params=payload, uri=f'/channels/{channel_id}/threads')
 
     async def join_thread(self, channel_id) -> dict:
@@ -346,7 +346,7 @@ class Channel(object):
 
     async def list_active_threads(self, channel_id, threads: list, members: list, has_more: bool ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#list-active-threads'''
-        payload = {
+        payload: dict = {
             'threads': threads,
             'members': members,
             'has_more': has_more
@@ -355,18 +355,18 @@ class Channel(object):
 
     async def list_public_archived_threads(self, channel_id, before=None, limit:int=None ) -> dict:
         '''https://discord.com/developers/docs/resources/channel#list-public-archived-threads'''
-        payload = { 'before': before, 'limit': limit}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'before': before, 'limit': limit}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request('GET', params=params, uri=f'/channels/{channel_id}/threads/archived/public')
 
     async def list_private_archived_threads(self, channel_id) -> dict:
         '''https://discord.com/developers/docs/resources/channel#list-private-archived-threads'''
-        payload = { 'before': before, 'limit': limit }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'before': before, 'limit': limit }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request('GET', params=payload, uri=f'/channels/{channel_id}/threads/archived/private')
 
     async def list_joined_private_archived_threads(self, channel_id, before=None, limit:int=None) -> dict:
         '''https://discord.com/developers/docs/resources/channel#list-joined-private-archived-threads'''
-        payload = { 'before': before, 'limit': limit }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'before': before, 'limit': limit }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await  self._request('GET', params=payload, uri=f'/channels/{channel_id}/users/@me/threads/archived/private')

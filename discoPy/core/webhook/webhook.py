@@ -4,8 +4,8 @@ class Webhook(object):
     
     async def create_webhook(self, channel_id, name: str, avatar=None) -> dict:
         '''https://discord.com/developers/docs/resources/webhook#create-webhook'''
-        payload = { 'name': name, 'avatar': avatar }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'name': name, 'avatar': avatar }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('POST', params=payload, uri=f'/channels/{channel_id}/webhooks')
 
     async def get_channel_webhooks(self, channel_id) -> dict:
@@ -26,18 +26,18 @@ class Webhook(object):
 
     async def modify_webhook(self, webhook_id, name: str=None, avatar=None, channel_id=None) -> dict:
         '''https://discord.com/developers/docs/resources/webhook#modify-webhook'''
-        payload = {
+        payload: dict = {
             'name': name,
             'avatar': avatar,
             'channel_id': channel_id
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('PATCH', params=payload, uri=f'/webhooks/{webhook_id}')
 
     async def modify_webhook_with_token(self, webhook_id, webhook_token, name: str=None, avatar=None) -> dict:
         '''https://discord.com/developers/docs/resources/webhook#modify-webhook-with-token'''
-        payload = { 'name': name, 'avatar': avatar }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'name': name, 'avatar': avatar }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('PATCH', params=payload, uri=f'/webhooks/{webhook_id}/{webhook_token}')
 
     async def delete_webhook(self) -> dict:
@@ -66,7 +66,7 @@ class Webhook(object):
         '''https://discord.com/developers/docs/resources/webhook#execute-webhook
         ! Note that when sending a message, you must provide a value for at least one of content, embeds, or file.
         '''
-        payload = {
+        payload: dict = {
             'content': content,
             'username': username,
             'avatar_url': avatar_url,
@@ -78,7 +78,7 @@ class Webhook(object):
             'attachments': attachments,
             'flags': flags
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         uri = f'/webhooks/{webhook_id}/{webhook_token}'
         if wait or thread_id != None:
             uri = f'{uri}?{wait}&thread_id={thread_id}'
@@ -94,8 +94,8 @@ class Webhook(object):
 
     async def get_webhook_messages(self, webhook_id, webhook_token, message_id, thread_id=None) -> dict:
         '''https://discord.com/developers/docs/resources/webhook#get-webhook-message'''
-        payload = { 'thread_id': thread_id}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'thread_id': thread_id}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('GET', params=payload, uri=f'/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}')
 
     async def edit_webhook_messages(self) -> dict:
@@ -108,8 +108,8 @@ class Webhook(object):
 
     async def get_original_interaction_response(self, application_id, interaction_token, thread_id=None) -> dict:
         '''https://discord.com/developers/docs/interactions/receiving-and-responding#get-original-interaction-response'''
-        payload = { 'thread_id': thread_id }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'thread_id': thread_id }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('GET', params=parapayloadms, uri=f'/webhooks/{application_id}/{interaction_token}/messages/@original')
 
     async def edit_original_interaction_response(self, application_id, interaction_token) -> dict:
@@ -135,7 +135,7 @@ class Webhook(object):
         flags: int=None
     ) -> dict:
         '''https://discord.com/developers/docs/interactions/receiving-and-responding#create-followup-message'''
-        payload = {
+        payload: dict = {
             'content': content,
             'tts': tts,
             'allowed_mentions': allowed_mentions,
@@ -145,13 +145,13 @@ class Webhook(object):
             'attachments': attachments,
             'flags': flags
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('POST', params=payload, uri=f'/webhooks/{application_id}/{interaction_token}')
 
     async def get_followup_message(self, application_id, interaction_token, message_id, thread_id=None) -> dict:
         '''https://discord.com/developers/docs/interactions/receiving-and-responding#get-followup-message'''
-        payload = { 'thread_id': thread_id}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'thread_id': thread_id}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('GET', params=payload, uri=f'/webhooks/{application_id}/{interaction_token}/messages/{message_id}')
 
     async def edit_followup_message(self, application_id, interaction_token, message_id) -> dict:

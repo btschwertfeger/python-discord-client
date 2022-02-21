@@ -17,7 +17,7 @@ class Guild(object):
         system_channel_flags: int=None
     ) -> dict:
         '''https://discord.com/developers/docs/resources/guild#create-guild'''
-        payload = { 
+        payload: dict = { 
             'name': name,
             'region': region,
             'icon': icon,
@@ -31,12 +31,12 @@ class Guild(object):
             'system_channel_id': system_channel_id,
             'system_channel_flags': system_channel_flags
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('POST', params=payload, uri='/guilds')
 
     async def get_guild(self, guild_id, with_counts: bool=False) -> dict:
         '''https://discord.com/developers/docs/resources/guild#get-guild'''
-        payload = { 'width_couunts': with_counts }
+        payload: dict = { 'width_couunts': with_counts }
         return await self._request('GET', params=payload, uri=f'/guilds/{guild_id}')
 
     async def get_guild_preview(self, guild_id) -> dict:
@@ -65,7 +65,7 @@ class Guild(object):
         description: str=None,premium_progress_bar_enabled: bool=None
     ) -> dict:
         '''https://discord.com/developers/docs/resources/guild#modify-guild'''
-        payload = {
+        payload: dict = {
             'name': name,
             'region': region,
             'verification_level': verification_level,
@@ -85,7 +85,7 @@ class Guild(object):
             'features': features,
             'description': description
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='POST', params=payload, uri=f'/guilds/{guild_id}')
 
     async def delete_guild(self, guild_id) -> dict:
@@ -110,7 +110,7 @@ class Guild(object):
         nsfw: bool
     ) -> dict:
         '''https://discord.com/developers/docs/resources/guild#create-guild-channel'''
-        payload = {
+        payload: dict = {
             'guild_id': guild_id,
             'name': name,
             'type': type,
@@ -123,20 +123,20 @@ class Guild(object):
             'parent_id': parent_id,
             'nsfw': nsfw
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='POST', params=payload, uri=f'/guilds/{guild_id}/channels')
 
     async def modify_channel_positions(self, 
         guild_id, id, position: int=None, lock_permissions: bool=None, parent_id=None
     ) -> dict:
         '''https://discord.com/developers/docs/resources/guild#modify-guild-channel-positions'''
-        payload = {
+        payload: dict = {
             'id': id,
             'position': position,
             'lock_permissions': lock_permissions,
             'parent_id': parent_id
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='PATCH', params=payload, uri=f'/guilds/{guild_id}/channels')
 
     async def list_active_threads(self, guild_id) -> dict:
@@ -149,19 +149,19 @@ class Guild(object):
 
     async def list_guild_members(self, guild_id, limit: int, after) -> dict:
         '''https://discord.com/developers/docs/resources/guild#list-guild-members'''
-        payload = { 'limit': limit, 'after': after}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'limit': limit, 'after': after}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='GET', params=params, uri=f'/guilds/{guild_id}/members')
 
     async def search_guild_members(self, guild_id, query: str, limit:int=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild#search-guild-members'''
-        payload = { 'query': query, 'limit': limit }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'query': query, 'limit': limit }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='GET', params=params, uri=f'/guilds/{guild_id}/members/search')
 
     async def add_guild_member(self, guild_id, user_id, access_token: str, nick: str, roles: list, mute: bool, deaf: bool) -> dict:
         '''https://discord.com/developers/docs/resources/guild#add-guild-member'''
-        payload = {
+        payload: dict = {
             'access_token': access_token,
             'nick': nick,
             'roles': roles,
@@ -169,13 +169,13 @@ class Guild(object):
             'deaf': deaf
         }
 
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='PUT', params=payload, uri=f'/guilds/{guild_id}/members/{user_id}')
 
     async def modify_current_member(self, guild_id, nick: str=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild#modify-current-member'''
-        payload = { 'nick': nick }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'nick': nick }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='PATCH', params=payload, uri=f'/guilds/{guild_id}/members/@me')
 
     async def add_guild_member_role(self, guild_id, user_id, role_id) -> dict:
@@ -200,8 +200,8 @@ class Guild(object):
 
     async def create_guild_ban(self, guild_id, user_id, delete_message_days: int=None, reason: str=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild#create-guild-ban'''
-        payload = { 'delete_message_days':delete_message_days, 'reason': reason }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'delete_message_days':delete_message_days, 'reason': reason }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='PUT', params=params, uri=f'/guilds/{guild_id}/bans/{user_id}')
 
     async def remove_guild_ban(self, guild_id, user_id) -> dict:
@@ -218,7 +218,7 @@ class Guild(object):
         mentionable: bool=False
     ) -> dict:
         '''https://discord.com/developers/docs/resources/guild#create-guild-role'''
-        payload = {
+        payload: dict = {
             'name': name,
             'permissions': permissions,
             'color': color,
@@ -228,13 +228,13 @@ class Guild(object):
             'mentionable': mentionable
         }
 
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='POST', params=payload, uri=f'/guilds/{guild_id}/roles')
 
     async def modify_guild_role_permissions(self, guild_id, id, position: int=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild#modify-guild-role-positions'''
-        payload = { 'id': id, 'position': position }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'id': id, 'position': position }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='PATCH', params=payload, uri=f'/guilds/{guild_id}/roles')
 
     async def modify_guild_role(self, 
@@ -242,7 +242,7 @@ class Guild(object):
         color: int=None, hoist: bool=None, icon=None, unicode_emoji: str=None, mentionable: bool=None
     ) -> dict:
         '''https://discord.com/developers/docs/resources/guild#modify-guild-role'''
-        payload = {
+        payload: dict = {
             'name': name,
             'permission': permission,
             'color': color,
@@ -251,7 +251,7 @@ class Guild(object):
             'unicode_emoji': unicode_emoji,
             'mentionable': mentionable
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='PATCH', params=payload, uri=f'/guilds/{guild_id}/roles/{role_id}')
 
     async def delete_guild_role(self, guild_id, role_id) -> dict:
@@ -260,19 +260,19 @@ class Guild(object):
 
     async def get_guild_prune_count(self, guild_id, days: int=7, include_roles: str=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild#get-guild-prune-count'''
-        payload = { 'days': days, 'include_roles': include_roles }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'days': days, 'include_roles': include_roles }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='GET', params=params, uri=f'/guilds/{guild_id}/prune')
 
     async def beginn_guild_prune(self, guild_id, days: int, compute_prune_count: bool, include_roles: str, reason: str=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild#begin-guild-prune'''
-        payload = {
+        payload: dict = {
             'days': days,
             'compute_prune_count': compute_prune_count,
             'include_roles': include_roles,
             'reason': reason
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='POST', params=payload, uri=f'/guilds/{guild_id}/prune')
 
     async def get_guild_voice_regions(self, guild_id) -> dict:
@@ -311,7 +311,7 @@ class Guild(object):
         '''https://discord.com/developers/docs/resources/guild#get-guild-widget-image
         @param style can be one of : [shield, banner1, banner2, banner3, banner4]
         '''
-        payload = { 'style': style }
+        payload: dict = { 'style': style }
         return await self._request(method='GET', params=params, uri=f'/guilds/{guild_id}/widget.png')
 
     async def get_guild_welcome_screen(self, guild_id) -> dict:
@@ -320,46 +320,46 @@ class Guild(object):
 
     async def modify_guild_welcome_screen(self, guild_id, enabled: bool=None, welcome_channels: list=None, description: str=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild#modify-guild-welcome-screen'''
-        payload = {
+        payload: dict = {
             'enabled': enabled,
             'welcome_channels': welcome_channels,
             'description': description
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='PATCH', params=params, uri=f'/guilds/{guild_id}/welcome-screen')
 
     async def modify_current_user_voice_state(self, guild_id, channel_id, suppress: bool=None, request_to_speak_timestamp=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state'''
-        payload = { 
+        payload: dict = { 
             'channel_id': channel_id, 
             'suppress': suppress,
             'request_to_speak_timestamp': request_to_speak_timestamp
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='PATCH', params=params, uri=f'/guilds/{guild_id}/voice-states/@me')
     
     async def modify_user_voice_state(self, guild_id, user_id, channel_id, suppress: bool=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild#modify-user-voice-state'''
-        payload = { 'channel_id': channel_id, 'suppress': suppress }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'channel_id': channel_id, 'suppress': suppress }
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request(method='PATCH', params=params, uri=f'/guilds/{guild_id}/voice-states/{user_id}e')
 
     async def get_guild_audit_log(self, guild_id, user_id, action_type:int, before=None, limit: int=50) -> dict:
         '''https://discord.com/developers/docs/resources/audit-log#get-guild-audit-log'''
-        payload = {
+        payload: dict = {
             'user_id': user_id,
             'action_type': action_type,
             'before': before,
             'limit': limit
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('GET', params=params, uri=f'/guilds/{guild_id}/audit-logs')
 
     # -----======= S H E D U L E D - E V E N T S =======-----
     async def list_scheduled_events_for_guild(self, guild_id, with_user_count:bool=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild-scheduled-event#list-scheduled-events-for-guild'''
-        payload = {'with_user_count': with_user_count}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {'with_user_count': with_user_count}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('GET', params=params, uri=f'/guilds/{guild_id}/scheduled-events')
 
     async def create_guild_scheduled_event(self, 
@@ -375,7 +375,7 @@ class Guild(object):
         image=None
     ) -> dict:
         '''https://discord.com/developers/docs/resources/guild-scheduled-event#create-guild-scheduled-event'''
-        payload = {
+        payload: dict = {
             'name': name,
             'entity_type': entity_type,
             'privacy_level': privacy_level,
@@ -386,13 +386,13 @@ class Guild(object):
             'description': description,
             'image': image
         }        
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('POST', params=payload, uri=f'/guilds/{guild_id}/scheduled-events')
 
     async def get_guild_scheduled_event(self, guild_id, guild_scheduled_event_id, with_user_count: bool=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild-scheduled-event#get-guild-scheduled-event'''
-        payload = { 'with_user_count': with_user_count}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'with_user_count': with_user_count}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('GET', params=params, uri=f'/guilds/{guild_id}/scheduled-events/{guild_scheduled_event_id}')
 
     async def modify_guild_scheduled_event(self, 
@@ -410,7 +410,7 @@ class Guild(object):
         image=None
     ) -> dict:
         '''https://discord.com/developers/docs/resources/guild-scheduled-event#modify-guild-scheduled-event'''
-        payload = {
+        payload: dict = {
             'channel_id': channel_id,
             'entity_metadata': entity_metadata,
             'name': name,
@@ -422,7 +422,7 @@ class Guild(object):
             'status': status,
             'image': image
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('PATCH', params=payload, uri=f'/guilds/{guild_id}/scheduled-events/{guild_scheduled_event_id}')
 
     async def delete_guild_scheduled_evend(self, guild_id, guild_scheduled_event_id) -> dict:
@@ -438,13 +438,13 @@ class Guild(object):
         after=None
     ) -> dict:
         '''https://discord.com/developers/docs/resources/guild-scheduled-event#get-guild-scheduled-event-users'''
-        payload = {
+        payload: dict = {
             'limit': limit,
             'with_member': with_member,
             'before': before,
             'after': after
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('GET', params=params, uri=f'/guilds/{guild_id}/scheduled-events/{guild_scheduled_event_id}/users')
 
     # -----======= T E M P L A T E S =======-----
@@ -462,8 +462,8 @@ class Guild(object):
 
     async def create_guild_template(self, guild_id, name: str, description: str=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild-template#create-guild-template'''
-        payload = { 'name': name, 'description': description}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'name': name, 'description': description}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('POST', params=payload, uri=f'/guilds/{guild_id}/templates')
 
     async def sync_guild_template(self, guild_id, template_code) -> dict:
@@ -472,8 +472,8 @@ class Guild(object):
 
     async def modify_guild_template(self, template_code, name: str=None, description: str=None) -> dict:
         '''https://discord.com/developers/docs/resources/guild-template#modify-guild-template'''
-        payload = { 'name': name, 'description': description}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'name': name, 'description': description}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('PATCH', params=payload, uri=f'/guilds/{guild_id}/templates/{template_code}')
 
     async def delete_guild_template(self, guild_id, template_code) -> dict:
@@ -491,7 +491,7 @@ class Guild(object):
 
     async def create_guild_emoji(self, guild_id, name: str, image, roles: list) -> dict:
         '''https://discord.com/developers/docs/resources/emoji#create-guild-emoji'''
-        payload = {
+        payload: dict = {
             'name': name,
             'image': image,
             'roles': roles
@@ -500,8 +500,8 @@ class Guild(object):
 
     async def modify_guild_emoji(self, guild_id, emoji_id, name: str=None, roles: list=None) -> dict:
         '''https://discord.com/developers/docs/resources/emoji#modify-guild-emoji'''
-        payload = {'name': name, 'roles': roles}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {'name': name, 'roles': roles}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('PATCH', params=payload, uri=f'/guilds/{guild_id}/emojis/{emoji_id}')
 
     async def delete_guild_emoji(self, guild_id, emoji_id) -> dict:
@@ -527,23 +527,23 @@ class Guild(object):
 
     async def create_guild_sticker(self, guild_id, name: str, description: str, tags: str, file) -> dict:
         '''https://discord.com/developers/docs/resources/sticker#create-guild-sticker'''
-        payload = {
+        payload: dict = {
             'name': name,
             'description': description,
             'tags': tags,
             'file': file
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('POST', params=payload, uri=f'/guilds/{guild_id}/stickers')
 
     async def modify_guild_sticker(self, name: str=None, description: str=None, tags: str=None) -> dict:
         '''https://discord.com/developers/docs/resources/sticker#modify-guild-sticker'''
-        payload = {
+        payload: dict = {
             'name': name,
             'description': description,
             'tags': tags
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('PATCH', params=payload, uri=f'/guilds/{guild_id}/stickers/{sticker_id}')
 
     async def delete_guild_sticker(self, guild_id, sticker_id) -> dict:

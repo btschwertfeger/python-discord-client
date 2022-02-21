@@ -1,9 +1,6 @@
 class Application(object):
     '''Contains a collection of application related methods.'''
-
-    # async def __init__(self, token: str, url: str=None):
-    #     super().__init__(token, url)
-
+    
     async def get_application_commands(self, application_id) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#get-global-application-commands'''
         return await self._request('GET', uri=f'/applications/{application_id}/commands')
@@ -17,14 +14,14 @@ class Application(object):
         type=None
     ) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#create-global-application-command'''
-        payload = {
+        payload: dict = {
             'name': name,
             'description': description,
             'options': options,
             'default_permission': default_permission,
             'type': type
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('POST', params=payload, uri=f'/applications/{application_id}/commands')
 
     async def get_global_application_command(self, application_id, command_id) -> dict:
@@ -40,13 +37,13 @@ class Application(object):
         default_permission: bool=None
     ) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#edit-global-application-command'''
-        payload = {
+        payload: dict = {
             'name': name,
             'description': description,
             'options': options,
             'default_permission': default_permission
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('PATCH', params=payload, uri=f'/applications/{application_id}/commands/{command_id}')
 
     async def delete_global_application_command(self, application_id, command_id) -> dict:
@@ -71,14 +68,14 @@ class Application(object):
         type=None
     ) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#create-guild-application-command'''
-        payload = {
+        payload: dict = {
             'name': name,
             'description': description,
             'options': options,
             'default_permission': default_permission,
             'type': type
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('POST', params=payload, uri=f'/applications/{application_id}/guilds/{guild_id}/commands')
 
     async def get_guild_application_command(self, application_id, guild_id, command_id) -> dict:
@@ -95,14 +92,14 @@ class Application(object):
         default_permission: bool=None
     ) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#edit-guild-application-command'''
-        payload = {
+        payload: dict = {
             'name': name,
             'description': description,
             'options': options,
             'default_permission': default_permission,
             'type': type
         }
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('PATCH', params=payload, uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}')
 
     async def delete_guild_application_command(self, application_id, guild_id, command_id) -> dict:
@@ -111,8 +108,8 @@ class Application(object):
 
     async def bulk_overwrite_guild_application_command(self, application_id, guild_id, new_commands: list=None) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-guild-application-commands'''
-        payload = { 'new_commands': new_commands}
-        payload = {k:v for k,v in payload.items() if v is not None}
+        payload: dict = { 'new_commands': new_commands}
+        payload: dict = {k:v for k,v in payload.items() if v is not None}
         return await self._request('PUT', params=payload, uri=f'/applications/{application_id}/guilds/{guild_id}/commands')
 
     async def get_guild_application_command_permissions(self, application_id, guild_id) -> dict:
@@ -125,12 +122,9 @@ class Application(object):
 
     async def edit_application_command_permissions(self, application_id, guild_id, command_id, permissions: list) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#edit-application-command-permissions'''
-        payload = { 'permissions': permissions }
+        payload: dict = { 'permissions': permissions }
         return await self._request('PUT', uri=f'/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions')
 
     async def batch_edit_application_command_permissions(self, application_id, guild_id, commands: [dict]) -> dict:
         '''https://discord.com/developers/docs/interactions/application-commands#batch-edit-application-command-permissions'''
         return await self._request('PUT', params=commands, uri=f'/applications/{application_id}/guilds/{guild_id}/commands/permissions')
-
-
-

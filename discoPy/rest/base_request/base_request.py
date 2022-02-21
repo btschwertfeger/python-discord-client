@@ -26,9 +26,9 @@ class BaseRequestAPI(object):
             if params:
                 data_json = params 
         try:
-            payload = json.dumps(data_json)
+            payload: dict = json.dumps(data_json)
         except:
-            payload = data_json
+            payload: dict = data_json
 
         url = f'{self.BASE_URL}{uri}'
         response = None
@@ -59,8 +59,8 @@ class BaseRequestAPI(object):
     def _send_file_attachment(self, method: str, uri: str, file_names: [str], payload: dict={}, headers: dict={}) -> dict:
         self._session.headers.update({ 'content-type': None })
         headers = { 'content-disposition': 'form-data; name="payload_json"' }
-        payload = { 'payload_json': json.dumps(payload) }
-        prepared_files = {}
+        payload: dict = { 'payload_json': json.dumps(payload) }
+        prepared_files: dict = {}
         for i, filename in enumerate(file_names):
             file_type = filename.split('.')[-1]
             media_type=None

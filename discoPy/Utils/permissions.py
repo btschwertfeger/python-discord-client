@@ -1,7 +1,5 @@
 import numpy as np
 
-
-
 class Permissions(object):
     '''Object to store and access User and Bot Permissions'''
 

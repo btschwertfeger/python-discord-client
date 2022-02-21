@@ -25,9 +25,11 @@ from discoPy.core.stage.stage import Stage
 from discoPy.core.user.user import User
 from discoPy.core.webhook.webhook import Webhook
 from discoPy.utils.permissions import Permissions
+from discoPy.utils.intents import Intents
+
 class BaseClient(
     Application, Guild, Channel, Stage, User, Webhook,
-    Permissions
+    Permissions, Intents
 ):
 
     BASE_URL = 'https://discord.com/api/v9'
