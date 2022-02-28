@@ -28,11 +28,6 @@ EXTRAS = {
     # 'fancy feature': ['django'],
 }
 
-# The rest you shouldn't have to touch too much :)
-# ------------------------------------------------
-# Except, perhaps the License and Trove Classifiers!
-# If you do change the License, remember to change the Trove Classifier for that!
-
 here = os.path.abspath(os.path.dirname(__file__))
 
 # Import the README and use it as the long-description.
@@ -51,7 +46,7 @@ if not VERSION:
         exec(f.read(), about)
 else:  
     raise ValueError('Version not found!')
-    exit()#about['__version__'] = VERSION
+    exit()
 
 class UploadCommand(Command):
     """Support setup.py upload."""
@@ -62,7 +57,7 @@ class UploadCommand(Command):
     @staticmethod
     def status(s):
         """Prints things in bold."""
-        print('\033[1m{0}\033[0m'.format(s))
+        print(f'\033[1m{s}\033[0m')
 
     def initialize_options(self):
         pass
@@ -78,13 +73,13 @@ class UploadCommand(Command):
             pass
 
         self.status('Building Source and Wheel (universal) distribution…')
-        os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
+        os.system(f'{sys.executable} setup.py sdist bdist_wheel --universal')
 
         self.status('Uploading the package to PyPI via Twine…')
         os.system('twine upload dist/*')
 
         self.status('Pushing git tags…')
-        os.system('git tag v{0}'.format(about['__version__']))
+        os.system(f'git tag v{about["__version__"]}')
         os.system('git push --tags')
 
         sys.exit()
@@ -98,7 +93,7 @@ class TestUploadCommand(Command):
     @staticmethod
     def status(s):
         """Prints things in bold."""
-        print('\033[1m{0}\033[0m'.format(s))
+        print(f'\033[1m{s}\033[0m')
 
     def initialize_options(self):
         pass
@@ -114,14 +109,13 @@ class TestUploadCommand(Command):
             pass
 
         self.status('Building Source and Wheel (universal) distribution…')
-        os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
+        os.system(f'{sys.executable} setup.py sdist bdist_wheel --universal')
 
         self.status('Uploading the package to PyPI via Twine…')
         os.system('twine upload -r testpypi dist/*')#--repository-url https://test.pypi.org/legacy/ dist/*')
 
         sys.exit()
 
-# Where the magic happens:
 setup(
     name=NAME,
     version=about['__version__'],
@@ -149,8 +143,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.7',
-        #'Programming Language :: Python :: Implementation :: CPython',
-        #'Programming Language :: Python :: Implementation :: PyPy'
     ],
     cmdclass={
         'upload': UploadCommand,
