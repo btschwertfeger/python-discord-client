@@ -18,8 +18,9 @@ class Permissions(object):
         'SEND_MESSAGES_IN_THREADS', 'START_EMBEDDED_ACTIVITIES', 'MODERATE_MEMBERS',
     ]
 
-    def list_roles(self) -> [str]:
-        return self._roles
+    @classmethod
+    def list_roles(cls) -> [str]:
+        return cls._roles
 
     def get_role(self, role_name: str='') -> int:
         for i, role in enumerate(self._roles):
