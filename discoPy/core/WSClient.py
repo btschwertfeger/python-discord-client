@@ -31,7 +31,7 @@ class WSClient(BaseClient):
         self._log = logging.getLogger(__name__)
 
         self._token = token
-        self._intents = np.sum([self._get_intents(intent) for intent in intents])
+        self._intents = self._get_intents(intents)
 
         if api_version != None:
             self._url = f'wss://gateway.discord.gg/?v={api_version}&encording=json'

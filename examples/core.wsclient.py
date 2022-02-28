@@ -42,10 +42,10 @@ async def main() -> None:
     token = config['TOKEN']
     channel_id = config['DEFAULT_CHANNEL_ID']
     guild_id = config['DEFAULT_GUILD_ID']
-
+    
     myclient = CustomClient( 
         token = token,
-        intents=WSClient.get_intents_list(),
+        intents = WSClient.get_intents_list(),
     )
     
     print(await myclient.get_current_user())
