@@ -137,46 +137,46 @@ class Channel(object):
 
     async def crosspost_message(self, message_id, channel_id) -> dict:
         '''https://discord.com/developers/docs/resources/channel#crosspost-message'''
-        response = self._request('POST', uri=f'/channels/{channel_id}/messages/{message_id}/crosspost')
+        return await self._request('POST', uri=f'/channels/{channel_id}/messages/{message_id}/crosspost')
 
     async def create_reaction(self, channel_id, message_id, emoji) -> dict:
         '''https://discord.com/developers/docs/resources/channel#create-reaction
             "The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. 
             To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
         '''
-        response = self._request('PUT', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me')
+        return await self._request('PUT', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me')
 
     async def delete_own_reaction(self, channel_id, message_id, emoji) -> dict:
         '''https://discord.com/developers/docs/resources/channel#delete-own-reaction
             "The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. 
             To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
         '''
-        response = self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me')
+        return await self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me')
 
     async def delete_user_reaction(self, channel_id, message_id, user_id, emoji) -> dict:
         '''https://discord.com/developers/docs/resources/channel#delete-user-reaction
             "The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. 
             To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
         '''
-        response = self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{user_id}')
+        return await self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{user_id}')
 
     async def get_reactions(self, channel_id, message_id, emoji, after=None, limit: int=None) -> dict:
         '''https://discord.com/developers/docs/resources/channel#get-reactions
             "The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. 
             To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
         '''
-        response = self._request('GET', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}')
+        return await self._request('GET', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}')
 
     async def delete_all_reactions(self, channel_id, message_id) -> dict:
         '''https://discord.com/developers/docs/resources/channel#delete-all-reactions'''
-        response = self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions')
+        return await self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions')
         
     async def delete_all_reactions_for_emoji(self, channel_id, message_id, emoji) -> dict:
         '''https://discord.com/developers/docs/resources/channel#delete-all-reactions-for-emoji
             "The emoji must be URL Encoded or the request will fail with 10014: Unknown Emoji. 
             To use custom emoji, you must encode it in the format name:id with the emoji name and emoji id."
         '''
-        response = self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}')
+        return await self._request('DELETE', uri=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}')
 
     async def edit_message(self,
         channel_id,
