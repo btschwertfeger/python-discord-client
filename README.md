@@ -9,7 +9,6 @@ Unofficial Python Discord SDK
 
 📍 Note: We have nothing to do with Discord and have not contributed to the Discord documentation!
 
-📍 This project is worked on daily. The releases available on PyPi may differ from those in the Github repository. So please see PyPi for working examples.
 
 # Features
 
