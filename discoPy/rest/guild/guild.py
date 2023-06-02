@@ -366,7 +366,7 @@ class GuildData(BaseRequestAPI):
         '''https://discord.com/developers/docs/resources/guild-scheduled-event#list-scheduled-events-for-guild'''
         payload: dict = {'with_user_count': with_user_count}
         payload: dict = {k:v for k,v in payload.items() if v is not None}
-        return self._request('GET', params=params, uri=f'/guilds/{guild_id}/scheduled-events')
+        return self._request('GET', params=payload, uri=f'/guilds/{guild_id}/scheduled-events')
 
     def create_guild_scheduled_event(self, 
         guild_id,
@@ -399,7 +399,7 @@ class GuildData(BaseRequestAPI):
         '''https://discord.com/developers/docs/resources/guild-scheduled-event#get-guild-scheduled-event'''
         payload: dict = { 'with_user_count': with_user_count}
         payload: dict = {k:v for k,v in payload.items() if v is not None}
-        return self._request('GET', params=params, uri=f'/guilds/{guild_id}/scheduled-events/{guild_scheduled_event_id}')
+        return self._request('GET', params=payload, uri=f'/guilds/{guild_id}/scheduled-events/{guild_scheduled_event_id}')
 
     def modify_guild_scheduled_event(self, 
         guild_id, 
