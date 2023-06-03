@@ -1,9 +1,16 @@
-import requests
+# -*- coding: utf-8 -*-
+
+"""Module that implements the base class for all REST clients related functions."""
+
 import json
-from typing import Union, Optional, Any, List
+from typing import Any, List, Optional, Union
+
+import requests
 
 
 class BaseRequestAPI:
+    """Class that is used as base for all REST clients to access the Discord API"""
+
     BASE_URL: str = "https://discord.com/api/v9"
     TIMEOUT: int = 10
 
@@ -14,7 +21,7 @@ class BaseRequestAPI:
         api_version: Optional[str] = None,
     ) -> None:
         self._token: str = token
-        if api_version != None:
+        if api_version is not None:
             self.BASE_URL = f"https://discord.com/api/v{api_version}"
         if url is not None:
             self.BASE_URL = url
@@ -37,16 +44,15 @@ class BaseRequestAPI:
         payload: Optional[Union[dict, str]] = None
         if method in ("GET", "DELETE"):
             if params:
-                strl = []
-                for key in sorted(params):
-                    strl.append("{}={}".format(key, params[key]))
-                data_json += "&".join(strl)
+                data_json += "&".join(
+                    [f"{key}={params[key]}" for key in sorted(params)]
+                )
                 uri += f"?{data_json}"
 
         elif method in ("POST", "PUT", "PATCH") and params is not None:
             try:
                 payload = json.dumps(params)
-            except:
+            except Exception:
                 payload = params
 
         url = f"{self.BASE_URL}{uri}"
@@ -119,7 +125,7 @@ class BaseRequestAPI:
 
             prepared_files[f"files[{i}]"] = (
                 filename,
-                open(filename, "rb"),
+                open(filename, "rb"),  # pylint: disable=consider-using-with
                 f"{media_type}/{file_type}",
                 {
                     "Content-Disposition": f'form-data; name="files[{i}]"; filename="{filename}"'
@@ -137,10 +143,11 @@ class BaseRequestAPI:
 
     @staticmethod
     def check_response(response: requests.Response) -> Union[dict, list, Any]:
+        """Checks the response for errors and/or parses the response"""
         if f"{response.status_code}"[0] == "2":
             try:
                 return response.json()
-            except ValueError:
-                raise Exception(response.content)
+            except ValueError as exc:
+                raise ValueError(response.content) from exc
         else:
             raise Exception(f"{response.status_code}: {response.text}")

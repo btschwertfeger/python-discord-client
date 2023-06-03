@@ -1,10 +1,15 @@
+# -*- coding: utf-8 -*-
+
+
+"""Module that implements the permissions related functions for the websocket client."""
+
 from typing import List
 
 
-class Permissions(object):
+class Permissions:
     """Object to store and access User and Bot Permissions"""
 
-    _roles = [
+    ROLES = [
         "CREATE_INSTANT_INVITE",
         "KICK_MEMBERS",
         "BAN_MEMBERS",
@@ -50,13 +55,16 @@ class Permissions(object):
 
     @classmethod
     def list_roles(cls) -> List[str]:
-        return cls._roles
+        """Return the roles"""
+        return cls.ROLES
 
     def get_role(self, role_name: str = "") -> int:
-        for i, role in enumerate(self._roles):
+        """Retrieve a specific role"""
+        for i, role in enumerate(self.ROLES):
             if role == role_name:
                 return 1 << i
         raise ValueError(f"Role {role_name} not found!")
 
     def get_roles(self, roles_list: List[str]) -> int:
+        """Get the integer value of roles"""
         return sum(self.get_role(role) for role in roles_list)

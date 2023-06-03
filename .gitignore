@@ -147,3 +147,5 @@ del/
 *.log
 *.zip
 dist/
+
+del.py

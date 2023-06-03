@@ -1,11 +1,18 @@
-from typing import Optional, List, Any
+# -*- coding: utf-8 -*-
+# pylint: disable=too-many-instance-attributes
+
+"""Module that implements the embedding related functions."""
+
+from typing import Any, List, Optional
 
 
 class Embed:
+    """Class that can be used to store information about embedded stuff."""
+
     def __init__(
         self: "Embed",
         title: Optional[str] = None,
-        type: Optional[str] = None,
+        type_: Optional[str] = None,
         description: Optional[str] = None,
         url: Optional[str] = None,
         timestamp: Optional[Any] = None,
@@ -19,7 +26,7 @@ class Embed:
         fields: Optional[List[dict]] = None,
     ):
         self.title = title
-        self.type = type
+        self.type = type_
         self.description = description
         self.url = url
         self.timestamp = timestamp
@@ -33,6 +40,7 @@ class Embed:
         self.fields = fields
 
     def asdict(self) -> dict:
+        """Return the attributes as dict."""
         return {
             "title": self.title,
             "type": self.type,

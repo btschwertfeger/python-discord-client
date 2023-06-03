@@ -1,13 +1,19 @@
+# -*- coding: utf-8 -*-
+
+"""Module that implements the websocket client"""
+
 import asyncio
-import websockets as ws
-import sys, traceback
 import json
-import time
 import logging
-from typing import Any, Optional, List
+import sys
+import time
+import traceback
+from typing import Any, List, Optional
+
+import websockets as ws
 
 from discord.base_request import BaseRequestAPI
-from discord.utils import Permissions, Intents
+from discord.utils import Intents, Permissions
 
 
 class WSClient(BaseRequestAPI, Permissions, Intents):
@@ -18,17 +24,22 @@ class WSClient(BaseRequestAPI, Permissions, Intents):
     @param: url (str):  required
     """
 
-    HEARTBEAT_INTERVAL = 41250 / 1000  # in seconds
-    LAST_PING = None
-    SEQUENCE = None
+    HEARTBEAT_INTERVAL: float = 41250 / 1000  # in seconds
+    LAST_PING: Optional[int] = None
+    SEQUENCE: str = None
+    LOG: logging.Logger = logging.getLogger(__name__)
+    URL: str = "wss://gateway.discord.gg/?v=9&encording=json"
 
-    URL = "wss://gateway.discord.gg/?v=9&encording=json"
-
-    def __init__(self, token: str, intents: List[str], api_version: str = None) -> None:
+    def __init__(
+        self,
+        token: str,
+        intents: List[str],
+        api_version: Optional[str] = None,
+    ) -> None:
         super().__init__(token=token, api_version=api_version)
 
-        self._log: logging.Logger = logging.getLogger(__name__)
-
+        self.__conn: Optional[Any] = None  # pylint: disable=unused-private-member
+        self.ws: Optional[Any] = None  # pylint: disable=unused-private-member
         self._token: str = token
         self._intents: int = self._get_intents(intents_list=intents)
 
@@ -36,34 +47,35 @@ class WSClient(BaseRequestAPI, Permissions, Intents):
             self.URL = f"wss://gateway.discord.gg/?v={api_version}&encording=json"
 
     def run(self: "WSClient") -> None:
-        self._connect()
+        """Connect to the websocket feed"""
+        self.__connect()
 
-    async def _main(self: "WSClient") -> None:
+    async def __main(self: "WSClient") -> None:
         try:
-            keep_waiting = True
+            keep_waiting: bool = True
             async with ws.connect(self.URL) as socket:
                 self.ws = socket
-                await self._authenticate()
+                await self.__authenticate()
 
                 try:
                     while keep_waiting:
                         if (
                             not self.LAST_PING
                             or int(time.time()) - self.LAST_PING
-                            > self._get_ws_pingtimeout()
+                            > self.HEARTBEAT_INTERVAL
                         ):
-                            await self._send_ping()
+                            await self.__send_ping()
                         try:
-                            evt = await asyncio.wait_for(
-                                self.ws.recv(), timeout=self._get_ws_pingtimeout()
+                            evt: Any = await asyncio.wait_for(
+                                self.ws.recv(), timeout=self.HEARTBEAT_INTERVAL
                             )
                         except asyncio.TimeoutError:
-                            self._log.info(
-                                f"No message in {self._get_ws_pingtimeout()} seconds"
+                            self.LOG.info(
+                                f"No message in {self.HEARTBEAT_INTERVAL} seconds"
                             )
-                            await self._send_ping()
+                            await self.__send_ping()
                         except asyncio.CancelledError:
-                            self._log.warn("Cancelled error")
+                            self.LOG.warning("Cancelled error")
                             await self.ws.ping()
                         else:
                             try:
@@ -72,59 +84,69 @@ class WSClient(BaseRequestAPI, Permissions, Intents):
                                     evt_obj["op"] != 11
                                     and "s" in evt_obj
                                     and evt_obj["s"]
-                                ):  # setting the _sequence
+                                ):
+                                    # setting the SEQUENCE
                                     self.SEQUENCE = evt_obj["s"]
                                     if evt_obj["op"] == 10:
                                         self.HEARTBEAT_INTERVAL = (
                                             int(evt_obj["d"]["heartbeat_interval"])
                                             / 1000
                                         )
-                            except ValueError:
-                                pass
+                            except ValueError as exc:
+                                logging.warning(exc)
                             else:
-                                await self.trigger("on_event", evt_obj)
+                                await self.on_event(evt_obj)
 
-                except ws.ConnectionClosed:
+                except ws.ConnectionClosed as exc:
                     keep_waiting = False
-                    self._log.warn(
-                        f"Websocket connection closed!  {e} {traceback.format_exc()}"
+                    self.LOG.warning(
+                        f"Websocket connection closed!  {exc} {traceback.format_exc()}"
                     )
                     await self._reconnect()
-                except Exception as e:
-                    self._log.error(f"WS exception: {e} {traceback.format_exc()}")
+                except Exception as exc:
+                    self.LOG.error(f"WS exception: {exc} {traceback.format_exc()}")
                     keep_waiting = False
                     await self._reconnect()
 
-        except Exception as e:
-            self._log.error(f"Exception!: {e} {traceback.format_exc()}")
+        except Exception as exc:
+            self.LOG.error(f"Exception!: {exc} {traceback.format_exc()}")
 
-    def _connect(self: "WSClient") -> None:
-        self._log.info("Connecting...")
-        self._conn = asyncio.ensure_future(self._main())
+    async def on_event(self: "WSClient", event: Any) -> None:
+        """Overload this function!"""
+        print(event)
+
+    def __connect(self: "WSClient") -> None:
+        """Connect to the websocket feed"""
+        self.LOG.info("Connecting...")
+        self.__conn = asyncio.ensure_future(  # pylint: disable=unused-private-member
+            self.__main()
+        )
 
     async def _reconnect(self: "WSClient") -> None:
-        self._log.info("Reconnecting Websocket...")
-        await self._close_connection()
-        self._connect()
+        """Closes and reopens the websocket connection"""
+        self.LOG.info("Reconnecting Websocket...")
+        await self.__close_connection()
+        self.__connect()
 
-    async def _close_connection(self: "WSClient") -> None:
+    async def __close_connection(self: "WSClient") -> None:
+        """Closes the websocket connection"""
         await self.ws.close()
 
     async def send_message(self: "WSClient", message: dict) -> None:
+        """Send a message via the websocket feed."""
         await self.ws.send(json.dumps(message))
 
-    async def _send_ping(self: "WSClient") -> None:
-        self._log.info(f"Sending ping now, _sequence: {self.SEQUENCE}")
+    async def __send_ping(self: "WSClient") -> None:
+        """Send a ping message"""
+        self.LOG.info(f"Sending ping now, _sequence: {self.SEQUENCE}")
         await self.send_message({"op": 1, "d": self.SEQUENCE})
         self.LAST_PING = int(time.time())
 
-    async def _authenticate(self: "WSClient") -> None:
-        await self.send_message(self._get_payload(kind="init"))
+    async def __authenticate(self: "WSClient") -> None:
+        """Authentication"""
+        await self.send_message(self.__get_payload(kind="init"))
 
-    def _get_ws_pingtimeout(self: "WSClient") -> float:
-        return self.HEARTBEAT_INTERVAL
-
-    def _get_payload(self: "WSClient", kind: str) -> dict:
+    def __get_payload(self: "WSClient", kind: str) -> dict:
         """https://discord.com/developers/docs/topics/gateway#identifying"""
         op: Optional[int] = None
         if kind == "reconnect":
@@ -148,17 +170,3 @@ class WSClient(BaseRequestAPI, Permissions, Intents):
                 "compress": True,
             },
         }
-
-    async def on(self: "WSClient", event_name: str, callback) -> None:
-        if event_name not in self._callbacks:
-            self._callbacks[event_name] = [callback]
-        else:
-            self._callbacks[event_name].append(callback)
-
-    async def trigger(self: "WSClient", event_name: str, event_object: Any) -> None:
-        if event_name in self._callbacks:
-            for callback in self._callbacks[event_name]:
-                await callback(event_object)
-
-    async def on_event(self: "WSClient", event: Any) -> None:
-        print(event)

@@ -1,6 +1,11 @@
-from discord.rest.base_request import BaseRequestAPI
+# -*- coding: utf-8 -*-
 
-from typing import Optional, Any, Union, List
+
+"""Module that implements the REST channel related functions."""
+
+from typing import Any, List, Optional
+
+from discord.base_request import BaseRequestAPI
 
 
 class Channel(BaseRequestAPI):
@@ -17,7 +22,7 @@ class Channel(BaseRequestAPI):
         channel_id: str,
         name: Optional[str] = None,
         icon: Optional[Any] = None,
-        type: Optional[int] = None,
+        type_: Optional[int] = None,
         position: Optional[int] = None,
         topic: Optional[str] = None,
         nsfw: Optional[bool] = None,
@@ -39,7 +44,7 @@ class Channel(BaseRequestAPI):
         payload: dict = {
             "name": name,
             "icon": icon,
-            "type": type,
+            "type": type_,
             "topic": topic,
             "nsfw": nsfw,
             "position": position,
@@ -123,14 +128,13 @@ class Channel(BaseRequestAPI):
         }
         payload = {k: v for k, v in payload.items() if v is not None}
         uri: str = f"/channels/{channel_id}/messages"
-        if files != None:
+        if files is not None:
             return self._send_file_attachment(  # type: ignore[no-any-return]
                 method="POST", uri=uri, file_names=files, payload=payload
             )
-        else:
-            return self._request(  # type: ignore[no-any-return]
-                method="POST", uri=uri, params=payload
-            )
+        return self._request(  # type: ignore[no-any-return]
+            method="POST", uri=uri, params=payload
+        )
 
     def crosspost_message(self: "Channel", message_id: str, channel_id: str) -> dict:
         """https://discord.com/developers/docs/resources/channel#crosspost-message"""
@@ -247,10 +251,9 @@ class Channel(BaseRequestAPI):
             return self._send_file_attachment(  # type: ignore[no-any-return]
                 method="POST", uri=uri, file_names=files, payload=payload
             )
-        else:
-            return self._request(  # type: ignore[no-any-return]
-                method="POST", uri=uri, params=payload
-            )
+        return self._request(  # type: ignore[no-any-return]
+            method="POST", uri=uri, params=payload
+        )
 
     def delete_message(self: "Channel", channel_id: str, message_id: str) -> dict:
         """https://discord.com/developers/docs/resources/channel#delete-message"""
@@ -272,10 +275,10 @@ class Channel(BaseRequestAPI):
         overwrite_id: str,
         allow: Optional[Any] = None,
         deny: Optional[Any] = None,
-        type: Optional[int] = None,
+        type_: Optional[int] = None,
     ) -> dict:
         """https://discord.com/developers/docs/resources/channel#edit-channel-permissions"""
-        payload: dict = {"allow": allow, "deny": deny, "type": type}
+        payload: dict = {"allow": allow, "deny": deny, "type": type_}
         return self._request(  # type: ignore[no-any-return]
             "PUT",
             params={k: v for k, v in payload.items() if v is not None},
@@ -401,7 +404,7 @@ class Channel(BaseRequestAPI):
         channel_id: str,
         name: str,
         auto_archive_duration: Optional[str] = None,
-        type: Optional[int] = None,
+        type_: Optional[int] = None,
         invitable: Optional[bool] = None,
         rate_limit_per_user: Optional[int] = None,
     ) -> dict:
@@ -409,7 +412,7 @@ class Channel(BaseRequestAPI):
         payload: dict = {
             "name": name,
             "auto_archive_duration": auto_archive_duration,
-            "type": type,
+            "type": type_,
             "invitable": invitable,
             "rate_limit_per_user": rate_limit_per_user,
         }

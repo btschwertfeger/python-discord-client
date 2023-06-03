@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 import asyncio
+import os
+from typing import Any
 
-from dotenv import dotenv_values
-
-from discord.rest.WSClient import WSClient
+from discord.WSClient import Channel, User, WSClient
 
 
 class CustomClient(WSClient):
-    async def on_event(self, event) -> None:
+    async def on_event(self: "CustomClient", event: Any) -> None:
         # print(event)
         if not event or "op" not in event:
             return
 
+        if not isinstance(event, dict):
+            return
         if event["op"] == 0:  # Dispatch
             try:
                 print(
-                    f'Channel: {data["d"]["channel_id"]} | {data["d"]["author"]["username"]}: {data["d"]["content"]}'
+                    f'Channel: {event["d"]["channel_id"]} | {event["d"]["author"]["username"]}: {event["d"]["content"]}'
                 )
-            except:
+            except KeyError:
                 # handle...
                 pass
 
@@ -42,19 +44,19 @@ class CustomClient(WSClient):
 
 
 async def main() -> None:
-    config = dotenv_values(".pythonenv")
-    token = config["TOKEN"]
-    channel_id = config["DEFAULT_CHANNEL_ID"]
-    guild_id = config["DEFAULT_GUILD_ID"]
+    token: str = os.getenv("TOKEN")
+    channel_id: str = os.getenv("DEFAULT_CHANNEL_ID")
 
-    myclient = CustomClient(
+    myclient: CustomClient = CustomClient(
         token=token,
         intents=WSClient.get_intents_list(),
     )
+    user: User = User(token=token)
+    print(user.get_current_user())
 
-    print(await myclient.get_current_user())
-    print(await myclient.get_channel(channel_id=channel_id))
-    print(await myclient.create_message(channel_id=channel_id, content="Hello!"))
+    channel: Channel = Channel(token=token)
+    print(channel.get_channel(channel_id=channel_id))
+    print(channel.create_message(channel_id=channel_id, content="Hello!"))
 
     print(myclient.list_roles())
     myclient.run()
@@ -64,4 +66,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(main())
+    asyncio.run(main())

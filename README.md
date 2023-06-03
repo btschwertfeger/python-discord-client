@@ -1,16 +1,15 @@
 # Welcome to python-discord-client
 
-[![Generic badge](https://img.shields.io/badge/license-MIT-green.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/license-GPLv3-green.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/python-3.7+-blue.svg)](https://shields.io/)
 [![PyPI download month](https://img.shields.io/pypi/dm/python-discord-client.svg)](https://pypi.python.org/pypi/python-discord-client/)
 [![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/btschwertfeger/python-discord-client)
 
 > ⚠️ This tool is not actively maintained and the latest release includes untested code. Also the contents of the master do not match the actual release. Please have a look at the corresponding tag for more information. The state of this project is of January 2022.
 
-> ❗️ Contributors and mainatainers are welcome!
+> ❗️ **The developer of this project is no longer actively working on it, as it served as a kind of playground. However, it is not intended to be left in the archives, so any involvement is welcome. Developers and maintainers who see potential in this project and wish to contribute are being sought. The current code is largely untested and has not been published on PyPI.**
 
 Unofficial Python Discord SDK
-📍 Note: We have nothing to do with Discord and have not contributed to the Discord documentation!
 
 # Features
 

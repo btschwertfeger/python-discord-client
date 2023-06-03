@@ -1,5 +1,11 @@
-from discord.rest.base_request import BaseRequestAPI
+# -*- coding: utf-8 -*-
+
+
+"""Module that implements the REST user related functions."""
+
 from typing import Any, Optional
+
+from discord.base_request import BaseRequestAPI
 
 
 class User(BaseRequestAPI):

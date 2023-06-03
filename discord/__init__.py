@@ -1,6 +1,9 @@
-from discord.rest.user import User
-from discord.rest.channel import Channel
-from discord.rest.application import Application
-from discord.rest.guild import Guild
-from discord.rest.webhook import Webhook
-from discord.rest.stage import Stage
+# -*- coding: utf-8 -*-
+
+"""Module that serves the REST and wesocket clients"""
+from discord.application import Application
+from discord.channel import Channel
+from discord.guild import Guild
+from discord.stage import Stage
+from discord.user import User
+from discord.webhook import Webhook

@@ -1,6 +1,12 @@
-from discord.rest.base_request import BaseRequestAPI
+# -*- coding: utf-8 -*-
+
+
+"""Module that implements the REST application related functions."""
+
 
 from typing import Optional, Union
+
+from discord.base_request import BaseRequestAPI
 
 
 class Application(BaseRequestAPI):
@@ -19,7 +25,7 @@ class Application(BaseRequestAPI):
         description: str,
         options: Optional[list] = None,
         default_permission: Optional[bool] = None,
-        type: Optional[Union[str, int]] = None,
+        type_: Optional[Union[str, int]] = None,
     ) -> dict:
         """https://discord.com/developers/docs/interactions/application-commands#create-global-application-command"""
         payload: dict = {
@@ -27,7 +33,7 @@ class Application(BaseRequestAPI):
             "description": description,
             "options": options,
             "default_permission": default_permission,
-            "type": type,
+            "type": type_,
         }
         return self._request(  # type: ignore[no-any-return]
             "POST",
@@ -97,7 +103,7 @@ class Application(BaseRequestAPI):
         description: str,
         options: Optional[list] = None,
         default_permission: Optional[bool] = None,
-        type: Optional[str] = None,
+        type_: Optional[str] = None,
     ) -> dict:
         """https://discord.com/developers/docs/interactions/application-commands#create-guild-application-command"""
         payload: dict = {
@@ -105,7 +111,7 @@ class Application(BaseRequestAPI):
             "description": description,
             "options": options,
             "default_permission": default_permission,
-            "type": type,
+            "type": type_,
         }
         return self._request(  # type: ignore[no-any-return]
             "POST",

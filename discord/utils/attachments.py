@@ -1,10 +1,17 @@
+# -*- coding: utf-8 -*-
+
+
+"""Module that implements the attachment related functions."""
+
 from typing import Optional
 
 
 class Attachment:
+    """Stores attachment related information"""
+
     def __init__(
         self: "Attachment",
-        id: int,
+        id_: int,
         filename: Optional[str] = None,
         description: Optional[str] = None,
         content_type: Optional[str] = None,
@@ -15,7 +22,7 @@ class Attachment:
         width: Optional[int] = None,
         ephemeral: Optional[bool] = None,
     ):
-        self.id = id
+        self.id = id_
         self.filename = filename
         self.description = description
         self.content_type = content_type
@@ -27,6 +34,7 @@ class Attachment:
         self.ephemeral = ephemeral
 
     def asdict(self) -> dict:
+        """Return the attributes as dict."""
         return {
             "id": self.id,
             "filename": self.filename,
@@ -36,6 +44,6 @@ class Attachment:
             "url": self.url,
             "proxy_url": self.proxy_url,
             "height": self.height,
-            "wisth": self.width,
+            "width": self.width,
             "ephemeral": self.ephemeral,
         }

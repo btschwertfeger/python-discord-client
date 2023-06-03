@@ -1,6 +1,11 @@
-from discord.rest.base_request import BaseRequestAPI
+# -*- coding: utf-8 -*-
 
-from typing import Optional, Any
+
+"""Module that implements the REST guild related functions."""
+
+from typing import Any, Optional
+
+from discord.base_request import BaseRequestAPI
 
 
 class Guild(BaseRequestAPI):
@@ -123,7 +128,7 @@ class Guild(BaseRequestAPI):
         self: "Guild",
         guild_id: str,
         name: str,
-        type: int,
+        type_: int,
         topic: str,
         bitrate: int,
         user_limit: int,
@@ -137,7 +142,7 @@ class Guild(BaseRequestAPI):
         payload: dict = {
             "guild_id": guild_id,
             "name": name,
-            "type": type,
+            "type": type_,
             "topic": topic,
             "bitrate": bitrate,
             "user_limit": user_limit,
@@ -156,14 +161,14 @@ class Guild(BaseRequestAPI):
     def modify_channel_positions(
         self: "Guild",
         guild_id: str,
-        id: str,
+        id_: str,
         position: Optional[int] = None,
         lock_permissions: Optional[bool] = None,
         parent_id: Optional[Any] = None,
     ) -> dict:
         """https://discord.com/developers/docs/resources/guild#modify-guild-channel-positions"""
         payload: dict = {
-            "id": id,
+            "id": id_,
             "position": position,
             "lock_permissions": lock_permissions,
             "parent_id": parent_id,
@@ -334,10 +339,10 @@ class Guild(BaseRequestAPI):
         )
 
     def modify_guild_role_permissions(
-        self: "Guild", guild_id: str, id: str, position: Optional[int] = None
+        self: "Guild", guild_id: str, id_: str, position: Optional[int] = None
     ) -> dict:
         """https://discord.com/developers/docs/resources/guild#modify-guild-role-positions"""
-        payload: dict = {"id": id, "position": position}
+        payload: dict = {"id": id_, "position": position}
         return self._request(  # type: ignore[no-any-return]
             method="PATCH",
             params={k: v for k, v in payload.items() if v is not None},

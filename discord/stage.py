@@ -1,5 +1,12 @@
-from discord.rest.base_request import BaseRequestAPI
-from typing import Optional, Any
+# -*- coding: utf-8 -*-
+
+
+"""Module that implements the REST stagerelated functions."""
+
+
+from typing import Any, Optional
+
+from discord.base_request import BaseRequestAPI
 
 
 class Stage(BaseRequestAPI):

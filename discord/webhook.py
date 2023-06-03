@@ -1,6 +1,11 @@
-from discord.rest.base_request import BaseRequestAPI
+# -*- coding: utf-8 -*-
 
-from typing import Optional, Any
+
+"""Module that implements the REST webhook related functions."""
+
+from typing import Any, Optional
+
+from discord.base_request import BaseRequestAPI
 
 
 class Webhook(BaseRequestAPI):

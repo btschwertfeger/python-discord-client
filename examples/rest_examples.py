@@ -1,29 +1,21 @@
 # -*- coding: utf-8 -*-
-import asyncio
 import logging
 import os
 import sys
-import traceback
-
-import websockets as ws
-from dotenv import dotenv_values
 
 sys.path.append(os.environ.get("PROJECT_ROOT_DIR"))
-from discord.rest.client import Application, Channel, Guild, Stage, User, Webhook
-from discord.rest.ws_client import WSClient
+from discord import Application, Channel, Guild, Stage, User, Webhook, WSClient
 
 logging.basicConfig(
-    # filename='example.log', filemode='w',
     level=logging.INFO,  # or logging.DEBUG
     format="%(asctime)s, line: %(lineno)d \t| %(message)s",
 )
 
 
 def main() -> None:
-    config = dotenv_values(".pythonenv")
-    token = config["TOKEN"]
-    channel_id = config["DEFAULT_CHANNEL_ID"]
-    guild_id = config["DEFAULT_GUILD_ID"]
+    token = os.getenv("TOKEN")
+    channel_id = os.getenv("DEFAULT_CHANNEL_ID")
+    guild_id = os.getenv("DEFAULT_GUILD_ID")
 
     # no channel specified
     channel = Channel(token=token)
