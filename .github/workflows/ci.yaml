@@ -1,0 +1,22 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# GitHub: https://github.com/btschwertfeger
+#
+
+name: CI
+
+on:
+  push:
+    branches:
+      - "**"
+
+concurrency:
+  group: CI-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ## ==========================================================================
+  ##    Checks the code logic, style and more
+  ##
+  Pre-Commit:
+    uses: ./.github/workflows/_pre_commit.yaml

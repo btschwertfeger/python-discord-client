@@ -1,41 +1,47 @@
-from discoPy.core.WSClient import WSClient
-import asyncio 
+# -*- coding: utf-8 -*-
+import asyncio
 
 from dotenv import dotenv_values
 
+from discord.rest.WSClient import WSClient
+
+
 class objectview(object):
-    def __init__(self, d: dict={}):
+    def __init__(self, d: dict = {}):
         self.__dict__ = d
+
 
 class TestClient(WSClient):
     async def on_event(self, event) -> None:
-        # print(event) 
-        if not event or 'op' not in event:
+        # print(event)
+        if not event or "op" not in event:
             return
 
-        if event['op'] == 0:  # Dispatch
+        if event["op"] == 0:  # Dispatch
             try:
-                print(f'Channel: {data["d"]["channel_id"]} | {data["d"]["author"]["username"]}: {data["d"]["content"]}')
+                print(
+                    f'Channel: {data["d"]["channel_id"]} | {data["d"]["author"]["username"]}: {data["d"]["content"]}'
+                )
             except:
                 # handle...
                 pass
 
-        elif event['op'] == 3:  # Presence Update
-            print(f'This is OP 3 - {event}')
-        elif event['op'] == 4:  # Voice State Update
-            print(f'This is OP 7 - {event}')
-        elif event['op'] == 8:  # Request Guild Members
-            print(f'This is OP 8 - {event}')
+        elif event["op"] == 3:  # Presence Update
+            print(f"This is OP 3 - {event}")
+        elif event["op"] == 4:  # Voice State Update
+            print(f"This is OP 7 - {event}")
+        elif event["op"] == 8:  # Request Guild Members
+            print(f"This is OP 8 - {event}")
 
 
 async def main() -> None:
-    config = objectview(dotenv_values('.pythonenv'))
+    config = objectview(dotenv_values(".pythonenv"))
     token = config.TOKEN
     default_channel_id = config.DEFAULT_CHANNEL_ID
     default_guild_id = config.DEFAULT_GUILD_ID
 
-    myclient = TestClient( 
-        token = token,
+    myclient = TestClient(
+        token=token,
         intents=WSClient.get_intents_list(),
     )
 
@@ -70,7 +76,7 @@ async def main() -> None:
 
     # print(await delete_guild(guild_id=default_guild_id))
     # print(await myclient.get_guild_channels(default_guild_id))
-    
+
     # print(await myclient.create_guild_channel(
     #     guild_id=default_guild_id,
     #     name='someTestChannel',
@@ -90,20 +96,20 @@ async def main() -> None:
     # =======---->  print(await myclient.list_active_threads(default_guild_id, [],[]))
 
     # =======----> print(await myclient.get_guild_member(guild_id=default_guild_id, user_id=xxx))
-    
+
     # print(await myclient.search_guild_members(default_guild_id,query='user', limit=10))
 
     # =======----> print(await myclient.add_guild_member(
-    #     guild_id=default_guild_id, 
-    #     user_id='hjbdf', 
-    #     access_token= 'OAuth2token', 
-    #     nick='value to set users name to', 
-    #     roles= [(1<<0)], 
+    #     guild_id=default_guild_id,
+    #     user_id='hjbdf',
+    #     access_token= 'OAuth2token',
+    #     nick='value to set users name to',
+    #     roles= [(1<<0)],
     #     mute=True,
     #     deaf=True
     # ))
 
-    xxx = 'testuserid'
+    xxx = "testuserid"
     # ======---> print(await myclient.remove_guild_member_role(
     #     guild_id=default_guild_id,
     #     user_id=xxx,
@@ -124,30 +130,32 @@ async def main() -> None:
     # =======---> print(await myclient.modify_guild_role_permissions(guild_id=default_guild_id, id='someroleid', name='adminnew'))
 
     someroleid = 1
-    print(await myclient.modify_guild_role(
-        guild_id=default_guild_id,
-        role_id=someroleid,
-        name='newguildrolename'
-    ))
+    print(
+        await myclient.modify_guild_role(
+            guild_id=default_guild_id, role_id=someroleid, name="newguildrolename"
+        )
+    )
 
-    print(await myclient.delete_guild_role(
-        guild_id=default_guild_id,
-        role_id=someroleid
-    ))
+    print(
+        await myclient.delete_guild_role(guild_id=default_guild_id, role_id=someroleid)
+    )
 
+    print(
+        await myclient.get_guild_prune_count(
+            guild_id=default_guild_id,
+            days=14,
+            # include_roles=
+        )
+    )
 
-    print(await myclient.get_guild_prune_count(
-        guild_id=default_guild_id,
-        days=14,
-        # include_roles=
-    ))
-
-    print(await myclient.beginn_guild_prune(
-        guild_id=default_guild_id,
-        days=14, 
-        compute_prune_count=True,
-        #  include_roles=
-    ))
+    print(
+        await myclient.beginn_guild_prune(
+            guild_id=default_guild_id,
+            days=14,
+            compute_prune_count=True,
+            #  include_roles=
+        )
+    )
 
     print(await myclient.get_guild_voice_regions(guild_id=default_guild_id))
 
@@ -162,32 +170,33 @@ async def main() -> None:
 
     print(await myclient.get_guild_widget_settings(guild_id=default_guild_id))
 
-
-    print(await myclient.modify_guild_widget(
-        guild_id=default_guild_id,
-        settings={}
-    ))
+    print(await myclient.modify_guild_widget(guild_id=default_guild_id, settings={}))
     print(await myclient.get_guild_widget(guild_id=default_guild_id))
     print(await myclient.get_guild_vanity_url(guild_id=default_guild_id))
     # print(await myclient.get_guild_widget_image(guild_id=default_guild_id,style=))
     print(await myclient.get_guild_welcome_screen(guild_id=default_guild_id))
     print(await myclient.modify_guild_welcome_screen(guild_id=default_guild_id))
-    print(await myclient.modify_current_user_voice_state(
-        guild_id=default_guild_id,
-        channel_id=default_channel_id,
-        suppress=False,
-    ))
+    print(
+        await myclient.modify_current_user_voice_state(
+            guild_id=default_guild_id,
+            channel_id=default_channel_id,
+            suppress=False,
+        )
+    )
 
-    print(await myclient.modify_user_voice_state(
-        guild_id=default_guild_id,
-        channel_id=default_channel_id,
-        suppress=False,
-    ))
+    print(
+        await myclient.modify_user_voice_state(
+            guild_id=default_guild_id,
+            channel_id=default_channel_id,
+            suppress=False,
+        )
+    )
 
-    print(await myclient.get_guild_audit_log(
-        guild_id=default_guild_id,
-
-    ))
+    print(
+        await myclient.get_guild_audit_log(
+            guild_id=default_guild_id,
+        )
+    )
 
     # ----========== SHEDULED EVENTS ========-------
     # print(await myclient.list_scheduled_events_for_guild(guild_id=default_guild_id, with_user_count=True))
@@ -213,13 +222,11 @@ async def main() -> None:
     #     channel_id=default_channel_id
     # ))
 
-
-
-
     # myclient.run()
 
     # while True:
     #     await asyncio.sleep(30)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(main())
