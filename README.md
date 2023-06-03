@@ -1,22 +1,22 @@
 # Welcome to python-discord-client
 
-[![Generic badge](https://img.shields.io/badge/license-MIT-green.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/license-GPLv3-green.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/python-3.7+-blue.svg)](https://shields.io/)
 [![PyPI download month](https://img.shields.io/pypi/dm/python-discord-client.svg)](https://pypi.python.org/pypi/python-discord-client/)
 [![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/btschwertfeger/python-discord-client)
 
+> ⚠️ This tool is not actively maintained and the latest release includes untested code. Also the contents of the master do not match the actual release. Please have a look at the corresponding tag for more information. The state of this project is of January 2022.
+
+> ❗️ **The developer of this project is no longer actively working on it, as it served as a kind of playground. However, it is not intended to be left in the archives, so any involvement is welcome. Developers and maintainers who see potential in this project and wish to contribute are being sought. The current code is largely untested and has not been published on PyPI.**
+
 Unofficial Python Discord SDK
-
-📍 Note: We have nothing to do with Discord and have not contributed to the Discord documentation!
-
 
 # Features
 
 - Connect to your Discord account
 - Simple handling of authentication
-- Access nearly all Discord REST endpoints (synchron and asynchron)
+- Access nearly all Discord REST endpoints
 - Websocket Client to receive almost all events
-- Create your custom Bots and manage your Guilds
 
 # Quick Start
 
@@ -31,7 +31,7 @@ python3 -m pip install python-discord-client
 ## Synchron REST Clients
 
 ```python
-from discoPy.rest.client import Application, User, Guild, Channel, Stage, Webhook
+from discord import Application, User, Guild, Channel, Stage, Webhook
 
 token = 'your-discord-token'
 channel = Channel(token=token)
@@ -57,7 +57,7 @@ print(user.get_current_user())
 
 ```python
 
-from discoPy.core.WSClient import WSClient
+from discord import WSClient
 import asyncio
 
 class CustomClient(WSClient):
@@ -107,18 +107,13 @@ async def main() -> None:
         intents=['DIRECT_MESSAGES', 'GUILDS'],
     )
 
-    # Almost every endpoint can be accessed via the websocket client.
-    print(await myclient.get_current_user())
-    print(await myclient.get_channel('<some-channel-id>'))
-    # ...
-
     myclient.run() # opens the websocket connection to receive events
 
     while True:
         await asyncio.sleep(30)
 
 if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(main())
+    asyncio.run(main())
 
 ```
 
@@ -131,7 +126,7 @@ Note: We have nothing to do with Discord and have not contributed to the Discord
 
 # Methods
 
-All methods below are available via the REST and Websocket Clients.
+All methods below are available via the REST clients.
 
 ## Application
 
@@ -365,7 +360,3 @@ All methods below are available via the REST and Websocket Clients.
 | get_webhook_messages               | https://discord.com/developers/docs/resources/webhook#execute-githubcompatible-webhook                       |
 | edit_webhook_messages              | https://discord.com/developers/docs/resources/webhook#edit-webhook-message                                   |
 | edit_original_interaction_response | https://discord.com/developers/docs/interactions/receiving-and-responding#edit-original-interaction-response |
-
-# Todo
-
-- Testing
